@@ -41,7 +41,13 @@
     <ItemGroup>
         <Compile Include="Controller\CustomerController.cs" />
         <Compile Include="Model\Customer.cs" />
+        <Compile Include="Model\EnumTypeOrganization.cs" />
         <Compile Include="Model\Exception\IncorrectLongException.cs" />
+        <Compile Include="Model\TaxNumber.cs" />
+        <Compile Include="Model\TaxNumberValidator\IndividualTaxNumValidator.cs" />
+        <Compile Include="Model\TaxNumberValidator\ITaxNumValidator.cs" />
+        <Compile Include="Model\TaxNumberValidator\LegalCompanyTaxNumValidator.cs" />
+        <Compile Include="Model\TaxNumberValidator\OtherTaxNumValidator.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

@@ -5,7 +5,8 @@ namespace LpakBL
 {
     public class Customer
     {
-        private string _name, _taxNumber, _comment;
+        private string _name, _comment;
+        private TaxNumber _taxNumber;
         public  Guid CustomerId { get; }
 
         public string Name
@@ -21,18 +22,20 @@ namespace LpakBL
             }
         }
 
-        public string TaxNumber
+        public TaxNumber TaxNumber
         {
-            get=>_taxNumber;
+            get => _taxNumber;
             set
             {
-                if (string.IsNullOrWhiteSpace(value) || value.Length > 14)
+                if (TaxNumber.GetValidator().Validate(value.ValueTaxNumber) == false)
                 {
-                    throw new IncorrectLongException(nameof(Name),"invalid longOrNull");
+                    //TODO: написать класс исключения
+                    throw new ArgumentException();
                 }
                 _taxNumber = value;
             }
         }
+
 
         public string Comment
         {
@@ -47,7 +50,7 @@ namespace LpakBL
             }
         }
         
-        public Customer(Guid guid, string name, string taxNumber, string comment = "")
+        public Customer(Guid guid, string name, TaxNumber taxNumber, string comment = "")
         {
             if (guid == Guid.Empty) throw new ArgumentException(nameof(guid), $"Guid not be empty {guid.ToString()}");
             CustomerId = guid;
@@ -56,7 +59,7 @@ namespace LpakBL
             Comment = comment;
         }
         
-        public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
+        public Customer(string name, TaxNumber taxNumber):this(Guid.NewGuid(), name, taxNumber){}
         
         public override string ToString()
         {
