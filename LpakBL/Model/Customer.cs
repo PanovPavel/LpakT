@@ -1,4 +1,5 @@
 using System;
+using LpakBL.Model;
 using LpakBL.Model.Exception;
 
 namespace LpakBL
@@ -6,7 +7,7 @@ namespace LpakBL
     public class Customer
     {
         private string _name, _comment;
-        private TaxNumber _taxNumber;
+        private string _taxNumber;
         public  Guid CustomerId { get; }
 
         public string Name
@@ -22,12 +23,12 @@ namespace LpakBL
             }
         }
 
-        public TaxNumber TaxNumber
+        public string TaxNumber
         {
             get => _taxNumber;
             set
             {
-                if (TaxNumber.GetValidator().Validate(value.ValueTaxNumber) == false)
+                if (TaxNumberValidator.GetTypeValidator(value).Validate())
                 {
                     //TODO: написать класс исключения
                     throw new ArgumentException();
@@ -50,7 +51,7 @@ namespace LpakBL
             }
         }
         
-        public Customer(Guid guid, string name, TaxNumber taxNumber, string comment = "")
+        public Customer(Guid guid, string name, string taxNumber, string comment = "")
         {
             if (guid == Guid.Empty) throw new ArgumentException(nameof(guid), $"Guid not be empty {guid.ToString()}");
             CustomerId = guid;
@@ -59,7 +60,7 @@ namespace LpakBL
             Comment = comment;
         }
         
-        public Customer(string name, TaxNumber taxNumber):this(Guid.NewGuid(), name, taxNumber){}
+        public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
         
         public override string ToString()
         {
