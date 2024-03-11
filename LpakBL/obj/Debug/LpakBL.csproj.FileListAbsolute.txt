@@ -1,0 +1,6 @@
+C:\Users\dsfds\Lpac\Lpak\LpakBL\bin\Debug\LpakBL.dll
+C:\Users\dsfds\Lpac\Lpak\LpakBL\bin\Debug\LpakBL.pdb
+C:\Users\dsfds\Lpac\Lpak\LpakBL\obj\Debug\LpakBL.csproj.AssemblyReference.cache
+C:\Users\dsfds\Lpac\Lpak\LpakBL\obj\Debug\LpakBL.csproj.CoreCompileInputs.cache
+C:\Users\dsfds\Lpac\Lpak\LpakBL\obj\Debug\LpakBL.dll
+C:\Users\dsfds\Lpac\Lpak\LpakBL\obj\Debug\LpakBL.pdb

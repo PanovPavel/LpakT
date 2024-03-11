@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakBL", "LpakBL\LpakBL.csproj", "{FEC55B87-0DBB-40D2-854F-45C0291819A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakView", "LpakView\LpakView.csproj", "{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
