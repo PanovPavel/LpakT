@@ -5,34 +5,38 @@ namespace LpakBL.Model.Exception.Tests
 {
     public class CompanyInnValidatorTest
     {
-        [Fact]
-        public void ValidateTest()
+        [Theory]
+        [InlineData("0905786581")]
+        [InlineData("1491763780")]
+        [InlineData("7232281509")]
+        [InlineData("5567796383")]
+        [InlineData("4368477140")]
+        [InlineData("8851775063")]
+        [InlineData("3376037670")]
+        [InlineData("0846324230")]
+
+        public void ValidateTest(string taxNumber)
         {
             // Act
             // Assert
-            Assert.Equal(true, new CompanyInnValidator("0905786581").Validate());
-            Assert.Equal(true, new CompanyInnValidator("1491763780").Validate());
-            Assert.Equal(true, new CompanyInnValidator("7232281509").Validate());
-            Assert.Equal(true, new CompanyInnValidator("5567796383").Validate());
-            Assert.Equal(true, new CompanyInnValidator("4368477140").Validate());
-            Assert.Equal(true, new CompanyInnValidator("8851775063").Validate());
-            Assert.Equal(true, new CompanyInnValidator("3376037670").Validate());
-            Assert.Equal(true, new CompanyInnValidator("0846324230").Validate());
-        }
+            Assert.Equal(true, new CompanyInnValidator(taxNumber).Validate());
 
-        [Fact]
-        public void ValidateTestReturnsFalse()
+        }
+        [Theory]
+        [InlineData("sadascxzczxcasdd")]
+        [InlineData("sadqwedqsad")]
+        [InlineData(" 7232281509")]
+        [InlineData("5567796383 ")]
+        [InlineData("43684 77140")]
+        [InlineData("88517750x3")]
+        [InlineData("0000000000")]
+        [InlineData("21123")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ValidateTestReturnsFalse(string taxNumber)
         {
-            Assert.Equal(false, new CompanyInnValidator("sadascxzczxcasdd").Validate());
-            Assert.Equal(false, new CompanyInnValidator("sadqwedqsad").Validate());
-            Assert.Equal(false, new CompanyInnValidator(" 7232281509").Validate());
-            Assert.Equal(false, new CompanyInnValidator("5567796383 ").Validate());
-            Assert.Equal(false, new CompanyInnValidator("43684 77140").Validate());
-            Assert.Equal(false, new CompanyInnValidator("88517750x3").Validate());
-            Assert.Equal(false, new CompanyInnValidator("0000000000").Validate());
-            Assert.Equal(false, new CompanyInnValidator("21123").Validate());
-            Assert.Equal(false, new CompanyInnValidator("").Validate());
-            Assert.Equal(false, new CompanyInnValidator(null).Validate());
+            Assert.Equal(false, new CompanyInnValidator(taxNumber).Validate());
+
         }
     }
 }
