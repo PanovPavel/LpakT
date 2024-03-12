@@ -1,4 +1,4 @@
-namespace LpakBL.Model
+namespace LpakBL.Model.TaxNumberValidator
 {
     public class OtherInnValidator:InnValidator
     {

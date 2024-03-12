@@ -41,7 +41,8 @@
     <ItemGroup>
         <Compile Include="Controller\CustomerController.cs" />
         <Compile Include="Model\Customer.cs" />
-        <Compile Include="Model\Exception\IncorrectLongException.cs" />
+        <Compile Include="Model\Exception\IncorrectLongOrNullException.cs" />
+        <Compile Include="Model\Exception\InvalidTaxNumber.cs" />
         <Compile Include="Model\TaxNumberValidator\IndividualInnValidator.cs" />
         <Compile Include="Model\TaxNumberValidator\InnValidator.cs" />
         <Compile Include="Model\TaxNumberValidator\CompanyInnValidator.cs" />

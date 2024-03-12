@@ -1,4 +1,4 @@
-namespace LpakBL
+namespace LpakBL.Model.TaxNumberValidator
 {
     public interface InnValidator
     {

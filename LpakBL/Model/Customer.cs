@@ -1,23 +1,20 @@
 using System;
-using LpakBL.Model;
 using LpakBL.Model.Exception;
-
-namespace LpakBL
+using static LpakBL.Model.TaxNumberValidator.TaxNumberValidator;
+namespace LpakBL.Model
 {
     public class Customer
     {
-        private string _name, _comment;
-        private string _taxNumber;
+        private string _name, _comment, _taxNumber;
         public  Guid CustomerId { get; }
-
         public string Name
         {
             get=>_name;
             set
             {
-                if (string.IsNullOrWhiteSpace(value) || value.Length > 100)
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    throw new IncorrectLongException(nameof(Name),"invalid longOrNull");
+                    throw new IncorrectLongOrNullException(nameof(Name),"Invalid long or value null");
                 }
                 _name = value;
             }
@@ -28,28 +25,21 @@ namespace LpakBL
             get => _taxNumber;
             set
             {
-                if (TaxNumberValidator.GetTypeValidator(value).Validate())
+                if (GetTypeValidator(value).Validate() == false)
                 {
-                    //TODO: написать класс исключения
-                    throw new ArgumentException();
+                    throw new InvalidTaxNumber(nameof(TaxNumber), $"Invalid tax number value={value}");
                 }
                 _taxNumber = value;
             }
         }
 
-
         public string Comment
         {
             get=>_comment;
-            set
-            {
-                if (value.Length > 250)
-                {
-                    throw new IncorrectLongException(nameof(Name),"invalid longOrNull");
-                }
-                _comment = value;
-            }
+            set => _comment = value ?? throw new ArgumentNullException(nameof(Comment),"Comment can't be null");
         }
+        
+        
         
         public Customer(Guid guid, string name, string taxNumber, string comment = "")
         {
@@ -61,10 +51,11 @@ namespace LpakBL
         }
         
         public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
+        public Customer(string name, string taxNumber, string comment):this(Guid.NewGuid(), name, taxNumber, comment){}
         
         public override string ToString()
         {
-            return $"{CustomerId} {Name} {TaxNumber}";
+            return $"{CustomerId} {Name} {TaxNumber} {Comment}";
         }
     }
 }

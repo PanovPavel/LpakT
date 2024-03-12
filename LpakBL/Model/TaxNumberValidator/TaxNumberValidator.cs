@@ -1,7 +1,4 @@
-using System;
-using LpakBL.Model.Exception;
-
-namespace LpakBL.Model
+namespace LpakBL.Model.TaxNumberValidator
 {
     //TODO: Активировать патерн стратегия в зависимости от длинны ИНН, а не от Enum
     //#region MyRegion
