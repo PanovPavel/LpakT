@@ -43,11 +43,12 @@
         <Compile Include="Model\Customer.cs" />
         <Compile Include="Model\Exception\IncorrectLongOrNullException.cs" />
         <Compile Include="Model\Exception\InvalidTaxNumber.cs" />
+        <Compile Include="Model\TaxNumberValidator\TypeNumberOrganization.cs" />
         <Compile Include="Model\TaxNumberValidator\IndividualInnValidator.cs" />
         <Compile Include="Model\TaxNumberValidator\InnValidator.cs" />
         <Compile Include="Model\TaxNumberValidator\CompanyInnValidator.cs" />
         <Compile Include="Model\TaxNumberValidator\OtherInnValidator.cs" />
-        <Compile Include="Model\TaxNumberValidator\TaxNumberValidator.cs" />
+        <Compile Include="Model\TaxNumberValidator\NumCompanyValidatorStrategy.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

@@ -1,12 +1,29 @@
 using System;
 using LpakBL.Model.Exception;
-using static LpakBL.Model.TaxNumberValidator.TaxNumberValidator;
+using LpakBL.Model.TaxNumberValidator;
+using static LpakBL.Model.TaxNumberValidator.NumCompanyValidatorStrategy;
 namespace LpakBL.Model
 {
     public class Customer
     {
+        public Customer(Guid guid, string name, string taxNumber, string comment = "")
+        {
+            if (guid == Guid.Empty) throw new ArgumentException(nameof(guid), $"Guid not be empty {guid.ToString()}");
+            CustomerId = guid;
+            Name = name;
+            TaxNumber = taxNumber;
+            Comment = comment;
+        }
+        
+        public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
+        
+        public Customer(string name, string taxNumber, string comment):this(Guid.NewGuid(), name, taxNumber, comment){}
+        
+        
         private string _name, _comment, _taxNumber;
+        
         public  Guid CustomerId { get; }
+        
         public string Name
         {
             get=>_name;
@@ -25,11 +42,18 @@ namespace LpakBL.Model
             get => _taxNumber;
             set
             {
-                if (GetTypeValidator(value).Validate() == false)
+                if(string.IsNullOrWhiteSpace(value)) throw new InvalidTaxNumber(nameof(TaxNumber), "Value cannot be null or empty string");
+                var isValid = false;
+                switch (value.Length)
                 {
-                    throw new InvalidTaxNumber(nameof(TaxNumber), $"Invalid tax number value={value}");
+                    case 12:
+                        isValid = new NumCompanyValidatorStrategy(TypeNumberOrganization.IndividualInn).GetTypeValidator(value).Validate();
+                        break;
+                    case 10:
+                        isValid = new NumCompanyValidatorStrategy(TypeNumberOrganization.CompanyInn).GetTypeValidator(value).Validate();
+                        break;
                 }
-                _taxNumber = value;
+                _taxNumber = isValid?value:throw new InvalidTaxNumber(nameof(TaxNumber), $"Invalid tax number value={value}");
             }
         }
 
@@ -41,17 +65,7 @@ namespace LpakBL.Model
         
         
         
-        public Customer(Guid guid, string name, string taxNumber, string comment = "")
-        {
-            if (guid == Guid.Empty) throw new ArgumentException(nameof(guid), $"Guid not be empty {guid.ToString()}");
-            CustomerId = guid;
-            Name = name;
-            TaxNumber = taxNumber;
-            Comment = comment;
-        }
-        
-        public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
-        public Customer(string name, string taxNumber, string comment):this(Guid.NewGuid(), name, taxNumber, comment){}
+
         
         public override string ToString()
         {
