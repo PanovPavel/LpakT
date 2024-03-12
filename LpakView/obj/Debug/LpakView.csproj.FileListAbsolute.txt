@@ -7,3 +7,4 @@ C:\Users\dsfds\Lpac\Lpak\LpakView\obj\Debug\LpakView.csproj.CoreCompileInputs.ca
 C:\Users\dsfds\Lpac\Lpak\LpakView\obj\Debug\LpakView.csproj.CopyComplete
 C:\Users\dsfds\Lpac\Lpak\LpakView\obj\Debug\LpakView.exe
 C:\Users\dsfds\Lpac\Lpak\LpakView\obj\Debug\LpakView.pdb
+C:\Users\dsfds\Lpac\Lpak\LpakView\bin\Debug\LpakView.exe.config

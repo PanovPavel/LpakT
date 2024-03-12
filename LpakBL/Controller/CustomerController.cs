@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using LpakBL.Model;
-using System.Configuration;
 namespace LpakBL.Controller
 {
-    public class CustomerController
+    public class CustomerController : IRepositoryAsync<Customer>
     {
         private string ConnectionString { get; }
 
@@ -18,10 +19,10 @@ namespace LpakBL.Controller
 
         public CustomerController()
         {
-            ConnectionString = ConfigurationManager.ConnectionStrings["LpakTestingDatabaseConnection"].ConnectionString;
+            ConnectionString = ConnectionStringFactory.GetConnectionString();
         }
         
-        public async Task<List<Customer>> GetAsync()
+        public async Task<List<Customer>> GetListAsync()
         {
             List<Customer> customers = new List<Customer>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -40,7 +41,7 @@ namespace LpakBL.Controller
             }
             return customers;
         }
-        public async Task<Customer> GetByIdAsync(Guid customerId)
+        public async Task<Customer> GetAsync(Guid customerId)
         {
             Customer customer = null;
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -65,6 +66,7 @@ namespace LpakBL.Controller
         
         public async Task<Customer> AddAsync(Customer customer)
         {
+            if(customer is null) throw new ArgumentNullException(nameof(customer));
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
@@ -77,16 +79,15 @@ namespace LpakBL.Controller
             return customer;
         }
 
-        public async Task<Customer> RemoveAsync(Customer customer)
+        public async Task RemoveAsync(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var command = new SqlCommand("DELETE FROM Customer WHERE СustomerId = @СustomerId", connection);
-                command.Parameters.AddWithValue("@СustomerId", customer.CustomerId);
+                command.Parameters.AddWithValue("@СustomerId", id);
                 await command.ExecuteNonQueryAsync();
             }
-            return customer;
         }
 
         public async Task<Customer> UpdateAsync(Customer customer)

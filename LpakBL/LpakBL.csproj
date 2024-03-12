@@ -40,7 +40,10 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Controller\ConnectionStringFactory.cs" />
         <Compile Include="Controller\CustomerController.cs" />
+        <Compile Include="Controller\IRepository.cs" />
+        <Compile Include="Controller\OrderController.cs" />
         <Compile Include="Model\Customer.cs" />
         <Compile Include="Model\Exception\IncorrectLongOrNullException.cs" />
         <Compile Include="Model\Exception\InvalidTaxNumber.cs" />
@@ -52,11 +55,8 @@
         <Compile Include="Model\NumberCompanyValidator\OtherInnValidator.cs" />
         <Compile Include="Model\NumberCompanyValidator\NumCompanyValidatorStrategy.cs" />
         <Compile Include="Model\Order.cs" />
-        <Compile Include="Model\OrderStatus.cs" />
+        <Compile Include="Model\StatusOrder.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="Controller\appsettings.json" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

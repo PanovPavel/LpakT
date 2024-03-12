@@ -2,7 +2,7 @@ using LpakBL.Model.Exception;
 
 namespace LpakBL.Model
 {
-    public class OrderStatus
+    public class StatusOrder
     {
         
         private string _name;
@@ -17,25 +17,24 @@ namespace LpakBL.Model
             }
         }
 
-        public OrderStatus(string name)
+        public StatusOrder(string name)
         {
             Name = name;
         }
-
-        public static OrderStatus NewWorkCreated()
-        {
-            return new OrderStatus("Новый");
-        }
-        public static OrderStatus InOfWorkCreated()
-        {
-            return new OrderStatus("В работе");
-        }
-
-        public static OrderStatus FinishedWorkCreated()
-        {
-            return new OrderStatus("Выполнен");
-        }
         
+        public static StatusOrder NewWorkCreated()
+        {
+            return new StatusOrder("Новый");
+        }
+        public static StatusOrder InOfWorkCreated()
+        {
+            return new StatusOrder("В работе");
+        }
+
+        public static StatusOrder FinishedWorkCreated()
+        {
+            return new StatusOrder("Выполнен");
+        }
         public override string ToString()
         {
             return $"{Name}";
