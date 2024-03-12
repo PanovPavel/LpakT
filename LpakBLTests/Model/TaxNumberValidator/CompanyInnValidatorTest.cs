@@ -1,7 +1,7 @@
-using LpakBL.Model.TaxNumberValidator;
+using LpakBL.Model.NumberCompanyValidator;
 using Xunit;
 
-namespace LpakBL.Model.Exception.Tests
+namespace LpakBLTests.Model.TaxNumberValidator
 {
     public class CompanyInnValidatorTest
     {

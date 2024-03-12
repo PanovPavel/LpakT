@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using LpakBL.Model.Exception;
-using LpakBL.Model.TaxNumberValidator;
-using static LpakBL.Model.TaxNumberValidator.NumCompanyValidatorStrategy;
+using LpakBL.Model.NumberCompanyValidator;
+
 namespace LpakBL.Model
 {
     public class Customer
@@ -23,6 +24,10 @@ namespace LpakBL.Model
         private string _name, _comment, _taxNumber;
         
         public  Guid CustomerId { get; }
+        
+        public FieldOfBusiness FieldOfBusiness { get; set; }
+        
+        public List<Order> Orders { get; set; }
         
         public string Name
         {
@@ -63,13 +68,34 @@ namespace LpakBL.Model
             set => _comment = value ?? throw new ArgumentNullException(nameof(Comment),"Comment can't be null");
         }
         
-        
-        
 
         
         public override string ToString()
         {
             return $"{CustomerId} {Name} {TaxNumber} {Comment}";
+        }
+        
+        
+        
+        //TODO: Переписать Equals и GetHashCode
+        public override bool Equals(object obj)
+        {
+            if (obj is Customer customer)
+            {
+                return this.CustomerId.ToString() == customer.CustomerId.ToString();
+            }
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Comment != null ? Comment.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TaxNumber != null ? TaxNumber.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ CustomerId.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace LpakBL.Model.TaxNumberValidator
+namespace LpakBL.Model.NumberCompanyValidator
 {
     public class IndividualInnValidator : InnValidator
     {

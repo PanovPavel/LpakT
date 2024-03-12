@@ -4,20 +4,27 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using LpakBL.Model;
-
+using System.Configuration;
 namespace LpakBL.Controller
 {
     public class CustomerController
     {
-        private readonly string _connectionString;
+        private string ConnectionString { get; }
+
         public CustomerController(string connectionString)
         {
-            _connectionString = connectionString;
+            ConnectionString = connectionString;
         }
+
+        public CustomerController()
+        {
+            ConnectionString = ConfigurationManager.ConnectionStrings["LpakTestingDatabaseConnection"].ConnectionString;
+        }
+        
         public async Task<List<Customer>> GetAsync()
         {
             List<Customer> customers = new List<Customer>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var reader =  await new SqlCommand("SELECT * FROM Customer", connection).ExecuteReaderAsync();
@@ -36,7 +43,7 @@ namespace LpakBL.Controller
         public async Task<Customer> GetByIdAsync(Guid customerId)
         {
             Customer customer = null;
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var command = new SqlCommand("SELECT * FROM Customer WHERE СustomerId = @СustomerId", connection);
@@ -58,7 +65,7 @@ namespace LpakBL.Controller
         
         public async Task<Customer> AddAsync(Customer customer)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var command = new SqlCommand("INSERT INTO Customer (CustomerId, Name, TaxNumber) VALUES (@СustomerId, @Name, @TaxNumber)", connection);
@@ -72,7 +79,7 @@ namespace LpakBL.Controller
 
         public async Task<Customer> RemoveAsync(Customer customer)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var command = new SqlCommand("DELETE FROM Customer WHERE СustomerId = @СustomerId", connection);
@@ -85,10 +92,10 @@ namespace LpakBL.Controller
         public async Task<Customer> UpdateAsync(Customer customer)
         {
             if(customer == null) throw new ArgumentNullException(nameof(customer), "Customer not be null");
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber WHERE СustomerId = @СustomerId", connection);
+                SqlCommand command = new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber WHERE СustomerId = @СustomerId", connection);
                 command.Parameters.AddWithValue("@СustomerId", customer.CustomerId);
                 command.Parameters.AddWithValue("@Name", customer.Name);
                 command.Parameters.AddWithValue("@TaxNumber", customer.TaxNumber);

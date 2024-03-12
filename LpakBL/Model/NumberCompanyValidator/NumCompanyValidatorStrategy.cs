@@ -1,4 +1,4 @@
-namespace LpakBL.Model.TaxNumberValidator
+namespace LpakBL.Model.NumberCompanyValidator
 {
     public class NumCompanyValidatorStrategy
     {
