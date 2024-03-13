@@ -12,6 +12,7 @@ namespace LpakBL.Controller
     //TODO: Сделать Reader асинхронным
     //Todo: Посмотреть как можно обработать исключения уникальности Statud FieldOFBusines
     //Todo: Подумать над абстрактым классом для connectionString
+    //Todo: Для Reader передавать в конструктор объека параметры не напрямую а из полей
     public class CustomerController : IRepositoryAsync<Customer>
     {
         private string ConnectionString { get; }

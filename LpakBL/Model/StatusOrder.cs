@@ -17,7 +17,7 @@ namespace LpakBL.Model
                 _name = value;
             }
         }
-        public Guid Id { get; set; }
+        public Guid Id { get; }
 
         public StatusOrder(Guid id, string name)
         {
