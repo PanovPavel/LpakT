@@ -42,6 +42,7 @@
     <ItemGroup>
         <Compile Include="Controller\ConnectionStringFactory.cs" />
         <Compile Include="Controller\CustomerController.cs" />
+        <Compile Include="Controller\Exception\InvalidDateException.cs" />
         <Compile Include="Controller\Exception\NotFoundByIdException.cs" />
         <Compile Include="Controller\Exception\RelatedRecordsException.cs" />
         <Compile Include="Controller\Exception\UniquenessStatusException.cs" />
