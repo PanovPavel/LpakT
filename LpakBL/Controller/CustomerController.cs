@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
+using LpakBL.Controller.Exception;
 using LpakBL.Model;
 namespace LpakBL.Controller
 {
+    //TODO: Добавить в Reader проверки на Null.
+    //Todo: Переписать все Readers и использовать GetOrdinal
+    //TODO: Сделать Reader асинхронным
+    //Todo: Посмотреть как можно обработать исключения уникальности Statud FieldOFBusines
+    //Todo: Подумать над абстрактым классом для connectionString
     public class CustomerController : IRepositoryAsync<Customer>
     {
         private string ConnectionString { get; }
@@ -21,59 +25,153 @@ namespace LpakBL.Controller
         {
             ConnectionString = ConnectionStringFactory.GetConnectionString();
         }
-        
+
+
         public async Task<List<Customer>> GetListAsync()
         {
             List<Customer> customers = new List<Customer>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
-                var reader =  await new SqlCommand("SELECT * FROM Customer", connection).ExecuteReaderAsync();
-                while (reader.Read())
+                var readerCustomer = await new SqlCommand("SELECT * FROM Customer", connection).ExecuteReaderAsync();
+                while (readerCustomer.Read())
                 {
+                    FieldOfBusiness fieldOfBusiness = await new FieldOfBusinessController().GetAsync(readerCustomer.GetGuid(4));
+                    List<Order> orders = await GetOrdersForCustomerAsync(readerCustomer.GetGuid(0));
+                    
+                    string comment = readerCustomer.IsDBNull(3)?"":readerCustomer.GetString(3);
                     Customer customer = new Customer(
-                        Guid.Parse(reader.GetString(0)), 
-                        reader.GetString(1), 
-                        reader.GetString(2)
-                        );
+                        readerCustomer.GetGuid(0),
+                        readerCustomer.GetString(1),
+                        readerCustomer.GetString(2).Trim(),
+                        comment,
+                        fieldOfBusiness,
+                        orders
+                    );
                     customers.Add(customer);
                 }
             }
             return customers;
         }
-        public async Task<Customer> GetAsync(Guid customerId)
+        
+        
+        
+        private async Task<List<Order>> GetOrdersForCustomerAsync(Guid customerId)
         {
-            Customer customer = null;
+            List<Order> orders = new List<Order>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("SELECT * FROM Customer WHERE СustomerId = @СustomerId", connection);
-                command.Parameters.AddWithValue("@СustomerId", customerId);
+
+                SqlCommand command = new SqlCommand("SELECT * FROM Orders WHERE CustomerId = @CustomerId", connection);
+                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customerId;
                 var reader = await command.ExecuteReaderAsync();
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
+                    var orderId = reader.GetGuid(reader.GetOrdinal("OrderId"));
+                    var order = await new OrderController().GetAsync(orderId);
+                    orders.Add(order);
+                }
+            }
+            return orders;
+        }
+        
+        public async Task<Customer> GetAsync(Guid id)
+        {
+            Customer customer = null;
+            var orders = await GetOrdersForCustomerAsync(id);
+            
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                SqlCommand command =
+                    new SqlCommand("SELECT * FROM Customer WHERE CustomerId = @CustomerId", connection);
+                
+                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = id;
+                var readerCustomer = await command.ExecuteReaderAsync();
+                while (readerCustomer.Read())
+                {
+                    FieldOfBusiness fieldOfBusiness = await new FieldOfBusinessController().GetAsync(readerCustomer.GetGuid(4));
+                    string comment = readerCustomer.IsDBNull(3)?"":readerCustomer.GetString(3);
                     customer = new Customer(
-                        Guid.Parse(reader.GetString(0)), 
-                        reader.GetString(1), 
-                        reader.GetString(2)
+                        readerCustomer.GetGuid(0),
+                        readerCustomer.GetString(1),
+                        readerCustomer.GetString(2).Trim(),
+                        comment,
+                        fieldOfBusiness,
+                        orders
                     );
                 }
+                return customer?? throw new NotFoundByIdException("Customer with gived ID not found");
+            }
+        }
+
+        public async Task<Customer> AddAsync(Customer customer)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                SqlCommand command =
+                    new SqlCommand("INSERT INTO Customer (CustomerId, Name, TaxNumber, Comment, FieldOfBusinessId)" +
+                                   " VALUES (@CustomerId, @Name, @TaxNumber, @Comment, @FieldOfBusinessId)",connection);
+                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
+                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
+                command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
+                command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
+                
+                FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
+                if (fieldOfBusiness == null)
+                {
+                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = customer.FieldOfBusiness.Id;
+                    await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
+                }else
+                {
+                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = fieldOfBusiness.Id;
+                }
+                await command.ExecuteNonQueryAsync();
             }
             return customer;
         }
-        
-        
-        
-        public async Task<Customer> AddAsync(Customer customer)
+        private async Task<FieldOfBusiness> CheckFieldOfBusinessExistsAsync(FieldOfBusiness fieldOfBusiness)
         {
-            if(customer is null) throw new ArgumentNullException(nameof(customer));
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
-                var command = new SqlCommand("INSERT INTO Customer (CustomerId, Name, TaxNumber) VALUES (@СustomerId, @Name, @TaxNumber)", connection);
-                command.Parameters.Add("@СustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
-                command.Parameters.AddWithValue("@Name", customer.Name);
-                command.Parameters.AddWithValue("@TaxNumber", customer.TaxNumber);
+                SqlCommand command = new SqlCommand("SELECT * FROM FieldOfBusiness" +
+                                                    " WHERE Name = @FieldOfBusinessName", connection);
+                command.Parameters.Add("@FieldOfBusinessName", SqlDbType.VarChar).Value = fieldOfBusiness.Name;
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    return new FieldOfBusiness(reader.GetGuid(0), reader.GetString(1));
+                }
+                return null;
+            }
+        }        
+        public async Task<Customer> UpdateAsync(Customer customer)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                SqlCommand command =
+                    new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber," +
+                                   " Comment = @Comment, FieldOfBusinessId=@FieldOfBusinessId" +
+                                   " WHERE CustomerId = @CustomerId", connection);
+                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
+                command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
+                command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
+                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
+                
+                //TODO: Вынести в отдельный метод
+                FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
+                if (fieldOfBusiness == null)
+                {
+                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = customer.FieldOfBusiness.Id;
+                    await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
+                }else
+                {
+                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = fieldOfBusiness.Id;
+                }
                 await command.ExecuteNonQueryAsync();
             }
             return customer;
@@ -81,28 +179,21 @@ namespace LpakBL.Controller
 
         public async Task RemoveAsync(Guid id)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                await connection.OpenAsync();
-                var command = new SqlCommand("DELETE FROM Customer WHERE СustomerId = @СustomerId", connection);
-                command.Parameters.AddWithValue("@СustomerId", id);
-                await command.ExecuteNonQueryAsync();
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
+                {
+                    await connection.OpenAsync();
+                    SqlCommand command =
+                        new SqlCommand("DELETE FROM Customer WHERE CustomerId = @CustomerId", connection);
+                    command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = id;
+                    await command.ExecuteNonQueryAsync();
+                }
             }
-        }
-
-        public async Task<Customer> UpdateAsync(Customer customer)
-        {
-            if(customer == null) throw new ArgumentNullException(nameof(customer), "Customer not be null");
-            using (var connection = new SqlConnection(ConnectionString))
+            catch (SqlException ex)
             {
-                await connection.OpenAsync();
-                SqlCommand command = new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber WHERE СustomerId = @СustomerId", connection);
-                command.Parameters.AddWithValue("@СustomerId", customer.CustomerId);
-                command.Parameters.AddWithValue("@Name", customer.Name);
-                command.Parameters.AddWithValue("@TaxNumber", customer.TaxNumber);
-                await command.ExecuteNonQueryAsync();
+                if(ex.Number == 547) throw new RelatedRecordsException("Customer has related orders. Please delete them first.");
             }
-            return customer;
         }
     }
 }

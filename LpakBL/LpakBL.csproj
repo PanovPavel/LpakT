@@ -42,18 +42,24 @@
     <ItemGroup>
         <Compile Include="Controller\ConnectionStringFactory.cs" />
         <Compile Include="Controller\CustomerController.cs" />
+        <Compile Include="Controller\Exception\NotFoundByIdException.cs" />
+        <Compile Include="Controller\Exception\RelatedRecordsException.cs" />
+        <Compile Include="Controller\Exception\UniquenessStatusException.cs" />
+        <Compile Include="Controller\FieldOfBusinessController.cs" />
         <Compile Include="Controller\IRepository.cs" />
         <Compile Include="Controller\OrderController.cs" />
+        <Compile Include="Controller\StatusOrderController.cs" />
         <Compile Include="Model\Customer.cs" />
+        <Compile Include="Model\CustomerBuilder.cs" />
         <Compile Include="Model\Exception\IncorrectLongOrNullException.cs" />
         <Compile Include="Model\Exception\InvalidTaxNumber.cs" />
         <Compile Include="Model\FieldOfBusiness.cs" />
-        <Compile Include="Model\NumberCompanyValidator\TypeNumberOrganization.cs" />
+        <Compile Include="Model\NumberCompanyValidator\CompanyInnValidator.cs" />
         <Compile Include="Model\NumberCompanyValidator\IndividualInnValidator.cs" />
         <Compile Include="Model\NumberCompanyValidator\InnValidator.cs" />
-        <Compile Include="Model\NumberCompanyValidator\CompanyInnValidator.cs" />
-        <Compile Include="Model\NumberCompanyValidator\OtherInnValidator.cs" />
         <Compile Include="Model\NumberCompanyValidator\NumCompanyValidatorStrategy.cs" />
+        <Compile Include="Model\NumberCompanyValidator\OtherInnValidator.cs" />
+        <Compile Include="Model\NumberCompanyValidator\TypeNumberOrganization.cs" />
         <Compile Include="Model\Order.cs" />
         <Compile Include="Model\StatusOrder.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>

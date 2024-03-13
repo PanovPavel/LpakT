@@ -7,28 +7,38 @@ namespace LpakBL.Model
 {
     public class Customer
     {
-        public Customer(Guid guid, string name, string taxNumber, string comment = "")
+       public Customer(string name, string taxNumber, FieldOfBusiness fieldOfBusiness)
+            :this(name, taxNumber, "", fieldOfBusiness){}
+        public Customer(string name, string taxNumber, string comment, FieldOfBusiness fieldOfBusiness)
+            :this(name, taxNumber, comment, fieldOfBusiness, new List<Order>()){}
+        public Customer(string name, string taxNumber, string comment, FieldOfBusiness fieldOfBusiness, List<Order> listOrders)
+            :this(Guid.NewGuid(), name, taxNumber, comment, fieldOfBusiness, listOrders){}
+
+        public Customer(Guid guid, string name, string taxNumber, string comment, FieldOfBusiness fieldOfBusiness,
+            List<Order> listOrder)
         {
             if (guid == Guid.Empty) throw new ArgumentException(nameof(guid), $"Guid not be empty {guid.ToString()}");
             CustomerId = guid;
             Name = name;
             TaxNumber = taxNumber;
             Comment = comment;
+            FieldOfBusiness = fieldOfBusiness;
+            Orders = listOrder;
         }
         
-        public Customer(string name, string taxNumber):this(Guid.NewGuid(), name, taxNumber){}
-        
-        public Customer(string name, string taxNumber, string comment):this(Guid.NewGuid(), name, taxNumber, comment){}
-        
-        
         private string _name, _comment, _taxNumber;
-        
+        private List<Order> _orders = new List<Order>();
+
         public  Guid CustomerId { get; }
         
         public FieldOfBusiness FieldOfBusiness { get; set; }
-        
-        public List<Order> Orders { get; set; }
-        
+
+        public List<Order> Orders
+        {
+            get => _orders;
+            set => _orders = value?? throw new ArgumentNullException(nameof(Orders), "Orders can't be null");
+        }
+
         public string Name
         {
             get=>_name;

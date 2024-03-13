@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using LpakBL.Controller;
 using LpakBL.Model;
-using LpakBL.Model.NumberCompanyValidator;
 
 namespace LpakView
 {
@@ -10,7 +9,7 @@ namespace LpakView
     {
         public static async Task Main(string[] args)
         {
-            var customer = new Customer("Name", "294868989407", "comment");
+            var customer = new Customer("Name", "294868989407", "comment", new FieldOfBusiness("sadsad"));
            await new CustomerController().AddAsync(customer);
         }
     }

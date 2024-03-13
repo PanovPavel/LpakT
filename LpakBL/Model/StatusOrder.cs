@@ -1,3 +1,4 @@
+using System;
 using LpakBL.Model.Exception;
 
 namespace LpakBL.Model
@@ -16,11 +17,21 @@ namespace LpakBL.Model
                 _name = value;
             }
         }
+        public Guid Id { get; set; }
 
-        public StatusOrder(string name)
+        public StatusOrder(Guid id, string name)
         {
+            Id = id;
             Name = name;
         }
+
+        public StatusOrder(string name):this(Guid.NewGuid(), name)  
+        {
+            
+        }
+        
+        
+        /*
         
         public static StatusOrder NewWorkCreated()
         {
@@ -35,9 +46,10 @@ namespace LpakBL.Model
         {
             return new StatusOrder("Выполнен");
         }
+        */
         public override string ToString()
         {
-            return $"{Name}";
+            return $"{Id} {Name}";
         }
     }
 }

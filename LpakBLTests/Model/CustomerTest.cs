@@ -22,7 +22,7 @@ namespace LpakBLTests.Model
         {
             var taxNumber = "032451591077";
             var comment = "This is a comment";
-            Assert.Equal(name, new Customer(name, taxNumber, comment).Name);
+            Assert.Equal(name, new Customer(name, taxNumber, comment, new FieldOfBusiness("sadsad")).Name);
         }
         
         [Theory]
@@ -34,7 +34,7 @@ namespace LpakBLTests.Model
         {
             var taxNumber = "032451591077";
             var comment = "This is a comment";
-            Assert.Throws<IncorrectLongOrNullException>(()=>new Customer(name, taxNumber, comment).Name);
+            Assert.Throws<IncorrectLongOrNullException>(()=>new Customer(name, taxNumber, comment, new FieldOfBusiness("sadsad")).Name);
         }
         
         [Theory]
@@ -48,7 +48,7 @@ namespace LpakBLTests.Model
         {
             var taxNumber = "032451591077";
             var name = " Ы фывФВ ";
-            Assert.Equal(comment, new Customer(name, taxNumber, comment).Comment);
+            Assert.Equal(comment, new Customer(name, taxNumber, comment, new FieldOfBusiness("sadsad")).Comment);
 
         }
         
@@ -59,7 +59,7 @@ namespace LpakBLTests.Model
         {
             var taxNumber = "032451591077";
             var name = " Ы фывФВ ";
-            Assert.Throws<ArgumentNullException>(()=>new Customer(name, taxNumber, comment));
+            Assert.Throws<ArgumentNullException>(()=>new Customer(name, taxNumber, comment, new FieldOfBusiness("sadsad")));
         }
         
         
@@ -83,7 +83,7 @@ namespace LpakBLTests.Model
         public void Customer_Constructor_CorrectTaxNumberTest(string taxNumber)
         {
             var name = " Ы фывФВ ";
-            Assert.Equal(taxNumber, new Customer(name, taxNumber, "This is a comment").TaxNumber);
+            Assert.Equal(taxNumber, new Customer(name, taxNumber, "This is a comment", new FieldOfBusiness("sadsad")).TaxNumber);
         }
         
         [Theory]
@@ -112,7 +112,7 @@ namespace LpakBLTests.Model
         public void Customer_Constructor_WrongTaxNumberTest(string taxNumber)
         {
             var name = " Ы фывФВ ";
-            Assert.Throws<InvalidTaxNumber>(()=>new Customer(name, taxNumber));
+            Assert.Throws<InvalidTaxNumber>(()=>new Customer(name, taxNumber, new FieldOfBusiness("sadsad")));
         }
     }
 }
