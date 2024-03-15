@@ -13,6 +13,8 @@ namespace LpakBL.Controller
     //Todo: Посмотреть как можно обработать исключения уникальности Statud FieldOFBusines
     //Todo: Подумать над абстрактым классом для connectionString
     //Todo: Для Reader передавать в конструктор объека параметры не напрямую а из полей
+    //Todo: Добавить транзакции в запросы
+    //TOdo: В update добавить проверку на существование объекта в бд
     public class CustomerController : IRepositoryAsync<Customer>
     {
         private string ConnectionString { get; }
