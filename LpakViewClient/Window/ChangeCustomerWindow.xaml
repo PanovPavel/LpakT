@@ -1,0 +1,45 @@
+<Window x:Class="LpakViewClient.ChangeCustomerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:LpakViewClient"
+        mc:Ignorable="d"
+        Title="ChangeCustomerWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5 5 0 5"/>
+            <Setter Property="Width" Value="300"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        </Style>
+    </Window.Resources>
+
+    <!--TODO: Переписать на Trigger события LostFocus вместо кнопки-->
+
+    <Grid>
+        <StackPanel Width="400">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock VerticalAlignment="Center">Id</TextBlock>
+            <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <TextBlock VerticalAlignment="Center">Name</TextBlock>
+            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock VerticalAlignment="Center">TaxNumber</TextBlock>
+            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock VerticalAlignment="Center">FieldOfBusiness</TextBlock>
+            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.FieldOfBusiness.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock VerticalAlignment="Center">Comment</TextBlock>
+            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        <Button Command="{Binding UpdateCustomer}" CommandParameter="{Binding SelectedCustomer}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
+    </StackPanel>
+    </Grid>
+</Window>

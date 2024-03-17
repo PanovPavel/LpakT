@@ -5,10 +5,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="ChangeObjectWindow" Height="450" Width="800">
+        Title="ChangeObjectWindow" Height="200" Width="700">
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="0 0 0 5"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Margin" Value="10 0 0 5"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <StackPanel>
-            
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Orientation="Horizontal">
+            <StackPanel Width="200">
+                <TextBlock Style="{StaticResource LabelStyle}" >Название организации закзчика:</TextBlock>
+                <TextBlock Style="{StaticResource LabelStyle}" >ИНН</TextBlock>
+                <TextBlock Style="{StaticResource LabelStyle}" >Область занятости</TextBlock>
+                <TextBlock Style="{StaticResource LabelStyle}" >Id</TextBlock>
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Name="CustomerIdTextBlock" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay, UpdateSourceTrigger=LostFocus}"></TextBlock>
+                <TextBox x:Name="CustomerNameTextBox" Style="{StaticResource TextBoxStyle}"  LostFocus="NameLostFocus" Text="{Binding Name, Mode=OneWay, UpdateSourceTrigger=LostFocus}"></TextBox>
+                <TextBox x:Name="TaxNumberTextBox" Style="{StaticResource TextBoxStyle}" LostFocus="TaxNumberLostFocus" Text="{Binding SelectedCustomer.TaxNumber}"></TextBox>
+                <TextBox x:Name="FieldOfBusinessTextBox" Style="{StaticResource TextBoxStyle}" LostFocus="FieldOfBusiness" Text="{Binding SelectedCustomer.FieldOfBusiness.Name}"></TextBox>
+                <Button   Width="300" HorizontalAlignment="Right">Изменить</Button>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

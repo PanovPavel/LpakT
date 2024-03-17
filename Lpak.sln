@@ -5,11 +5,11 @@ VisualStudioVersion = 17.7.34009.444
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakBL", "LpakBL\LpakBL.csproj", "{FEC55B87-0DBB-40D2-854F-45C0291819A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakView", "LpakView\LpakView.csproj", "{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakBLTests", "LpakBLTests\LpakBLTests.csproj", "{8686B9CA-94D1-4347-92DB-D6DB09558BF5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfClient", "WpfClient\WpfClient.csproj", "{A2E9BD02-D2C6-49D3-8284-31F7B3965C45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LpakViewClient", "LpakViewClient\LpakViewClient.csproj", "{31FC3785-3FEC-4ADB-B5FE-E93385315504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEC55B87-0DBB-40D2-854F-45C0291819A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C7F68D3-FAEC-4633-9EB2-50363F253CEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8686B9CA-94D1-4347-92DB-D6DB09558BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8686B9CA-94D1-4347-92DB-D6DB09558BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8686B9CA-94D1-4347-92DB-D6DB09558BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{A2E9BD02-D2C6-49D3-8284-31F7B3965C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2E9BD02-D2C6-49D3-8284-31F7B3965C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2E9BD02-D2C6-49D3-8284-31F7B3965C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31FC3785-3FEC-4ADB-B5FE-E93385315504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31FC3785-3FEC-4ADB-B5FE-E93385315504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31FC3785-3FEC-4ADB-B5FE-E93385315504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31FC3785-3FEC-4ADB-B5FE-E93385315504}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

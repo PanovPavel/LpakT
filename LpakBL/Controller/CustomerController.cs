@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -111,28 +112,42 @@ namespace LpakBL.Controller
 
         public async Task<Customer> AddAsync(Customer customer)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                await connection.OpenAsync();
-                SqlCommand command =
-                    new SqlCommand("INSERT INTO Customer (CustomerId, Name, TaxNumber, Comment, FieldOfBusinessId)" +
-                                   " VALUES (@CustomerId, @Name, @TaxNumber, @Comment, @FieldOfBusinessId)",connection);
-                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
-                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
-                command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
-                command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
-                
-                FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
-                if (fieldOfBusiness == null)
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = customer.FieldOfBusiness.Id;
-                    await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
-                }else
-                {
-                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = fieldOfBusiness.Id;
+                    await connection.OpenAsync();
+                    SqlCommand command =
+                        new SqlCommand(
+                            "INSERT INTO Customer (CustomerId, Name, TaxNumber, Comment, FieldOfBusinessId)" +
+                            " VALUES (@CustomerId, @Name, @TaxNumber, @Comment, @FieldOfBusinessId)", connection);
+                    command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
+                    command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
+                    command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
+                    command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
+
+                    FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
+                    if (fieldOfBusiness == null)
+                    {
+                        command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value =
+                            customer.FieldOfBusiness.Id;
+                        await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
+                    }
+                    else
+                    {
+                        command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value =
+                            fieldOfBusiness.Id;
+                    }
+
+                    await command.ExecuteNonQueryAsync();
                 }
-                await command.ExecuteNonQueryAsync();
             }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627 || ex.Number == 2601) throw new UniquenessStatusException("Current customer with this taxNumber or name already   exists");
+                throw;
+            }
+
             return customer;
         }
         private async Task<FieldOfBusiness> CheckFieldOfBusinessExistsAsync(FieldOfBusiness fieldOfBusiness)
@@ -143,8 +158,8 @@ namespace LpakBL.Controller
                 SqlCommand command = new SqlCommand("SELECT * FROM FieldOfBusiness" +
                                                     " WHERE Name = @FieldOfBusinessName", connection);
                 command.Parameters.Add("@FieldOfBusinessName", SqlDbType.VarChar).Value = fieldOfBusiness.Name;
-                var reader = await command.ExecuteReaderAsync();
-                while (reader.Read())
+                var reader = command.ExecuteReader();
+                while (await reader.ReadAsync())
                 {
                     return new FieldOfBusiness(reader.GetGuid(0), reader.GetString(1));
                 }
@@ -153,30 +168,45 @@ namespace LpakBL.Controller
         }        
         public async Task<Customer> UpdateAsync(Customer customer)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            try
             {
-                await connection.OpenAsync();
-                SqlCommand command =
-                    new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber," +
-                                   " Comment = @Comment, FieldOfBusinessId=@FieldOfBusinessId" +
-                                   " WHERE CustomerId = @CustomerId", connection);
-                command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
-                command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
-                command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
-                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
-                
-                //TODO: Вынести в отдельный метод
-                FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
-                if (fieldOfBusiness == null)
+
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
-                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = customer.FieldOfBusiness.Id;
-                    await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
-                }else
-                {
-                    command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value = fieldOfBusiness.Id;
+                    await connection.OpenAsync();
+                    SqlCommand command =
+                        new SqlCommand("UPDATE Customer SET Name = @Name, TaxNumber = @TaxNumber," +
+                                       " Comment = @Comment, FieldOfBusinessId=@FieldOfBusinessId" +
+                                       " WHERE CustomerId = @CustomerId", connection);
+                    command.Parameters.Add("@Name", SqlDbType.VarChar).Value = customer.Name;
+                    command.Parameters.Add("@TaxNumber", SqlDbType.VarChar).Value = customer.TaxNumber;
+                    command.Parameters.Add("@Comment", SqlDbType.VarChar).Value = customer.Comment;
+                    command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = customer.CustomerId;
+
+                    //TODO: Вынести в отдельный метод
+                    FieldOfBusiness fieldOfBusiness = CheckFieldOfBusinessExistsAsync(customer.FieldOfBusiness).Result;
+                    if (fieldOfBusiness == null)
+                    {
+                        command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value =
+                            customer.FieldOfBusiness.Id;
+                        await new FieldOfBusinessController().AddAsync(customer.FieldOfBusiness);
+                    }
+                    else
+                    {
+                        command.Parameters.Add("@FieldOfBusinessId", SqlDbType.UniqueIdentifier).Value =
+                            fieldOfBusiness.Id;
+                    }
+
+                    await command.ExecuteNonQueryAsync();
                 }
-                await command.ExecuteNonQueryAsync();
             }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 2627 || ex.Number == 2601)
+                    throw new UniquenessStatusException("Current customer with this taxNumber or name already   exists.");
+                throw;
+            }
+
             return customer;
         }
 

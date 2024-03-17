@@ -1,0 +1,20 @@
+<UserControl x:Class="WpfClient.Controls.CommentControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfClient.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+        <Grid>
+            <Grid>
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                            Height="150px">
+                    <Button Command="{Binding RemoveCommand}" Height="20px" Content="Удалить"></Button>
+                    <Button Click="OpenNewWindowButton_Click"  Height="20px" Content="Открыть новое окно"></Button>
+                <TextBox x:Name="CommentCustomerTextBox"  Text="{Binding SelectedCustomer.Comment, Mode=OneWay}" LostFocus="TextBoxCommentLostFocus" Height="150px" />
+                <TextBlock x:Name="CustomerIdTextBlock"  Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}" Height="150px" />
+            </StackPanel>
+            </Grid>
+        </Grid>
+</UserControl>
