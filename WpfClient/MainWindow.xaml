@@ -1,0 +1,36 @@
+﻿<Window x:Class="WpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfClient.ViewModel"
+        xmlns:controls="clr-namespace:WpfClient.Controls"
+        mc:Ignorable="d"
+        Title="MainWindow" MinHeight="500" MinWidth="700">
+    <Window.Resources>
+        <local:CustomerVM x:Key="CustVm" />
+    </Window.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Клиенты">
+                <Grid Background="#FFE5E5E5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Name="Asd"/>
+                        <controls:CustomersListViewControl DataContext="{StaticResource CustVm}" x:Name="CustomersListView"/>
+                        <controls:CommentControl Grid.Column="0" DataContext="{StaticResource CustVm}"></controls:CommentControl>
+                        
+                        <controls:OrdersViewControl Grid.Column="1"  x:Name="OrdersViewControl"> </controls:OrdersViewControl>
+
+
+                    </Grid>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>
