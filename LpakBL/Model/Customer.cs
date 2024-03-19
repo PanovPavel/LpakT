@@ -133,29 +133,7 @@ namespace LpakBL.Model
         }
 
 
-        //TODO: Переписать Equals и GetHashCode
-        public override bool Equals(object obj)
-        {
-            if (obj is Customer customer)
-            {
-                if(this.CustomerId == customer.CustomerId) return true;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (_name != null ? _name.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_comment != null ? _comment.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_taxNumber != null ? _taxNumber.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_orders != null ? _orders.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_fieldOfBusiness != null ? _fieldOfBusiness.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ CustomerId.GetHashCode();
-                return hashCode;
-            }
-        }
+       
 
 
         public event PropertyChangedEventHandler PropertyChanged;

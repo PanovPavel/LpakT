@@ -92,7 +92,7 @@ namespace LpakBL.Model
             set => _status = value ?? throw new ArgumentNullException(nameof(Status), "Status can not be null");
         }
 
-        public override bool Equals(object obj)
+        /*public override bool Equals(object obj)
         {
             if (obj is Order order)
             {
@@ -113,7 +113,7 @@ namespace LpakBL.Model
                 hashCode = (hashCode * 397) ^ Id.GetHashCode();
                 return hashCode;
             }
-        }
+        }*/
 
         public override string ToString()
         {

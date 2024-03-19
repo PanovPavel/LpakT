@@ -21,7 +21,6 @@ namespace LpakViewClient.ModelView
             GetLoadedCustomers();
             AddNewOrderForCustomerWindow.AddOrderForUser += ViewModelUpdateCustomerOrders;
             OrderViewModel.OrderRemoved += (object sendler, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
-            
         }
         
         
