@@ -1,7 +1,7 @@
 using System.Windows;
 using LpakViewClient.ModelView;
 
-namespace LpakViewClient
+namespace LpakViewClient.Windows
 {
     public partial class AddCustomerWindow : Window
     {

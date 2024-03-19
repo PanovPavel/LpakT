@@ -2,7 +2,7 @@ using System;
 using LpakBL.Controller.Exception;
 using LpakBL.Model.Exception;
 
-namespace LpakViewClient
+namespace LpakViewClient.Exceptions
 {
     public static class HandlerException 
     {

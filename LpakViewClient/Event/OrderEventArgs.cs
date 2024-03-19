@@ -5,7 +5,7 @@ namespace LpakViewClient.Event
 {
     public class OrderEventArgs : EventArgs
     {
-        public Order Order { get; set; }
+        public Order Order { get;  }
         public OrderEventArgs(Order order)
         {
             Order = order;

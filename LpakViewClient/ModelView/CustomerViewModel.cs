@@ -8,6 +8,7 @@ using LpakBL.Controller.Exception;
 using LpakBL.Model;
 using LpakBL.Model.Exception;
 using LpakViewClient.Event;
+using LpakViewClient.Exceptions;
 using LpakViewClient.Windows;
 
 namespace LpakViewClient.ModelView
@@ -20,8 +21,8 @@ namespace LpakViewClient.ModelView
         {
             GetLoadedCustomers();
             AddNewOrderForCustomerWindow.AddOrderForUser += ViewModelUpdateCustomerOrders;
-            OrderViewModel.OrderRemoved += (object sendler, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
-            OrderViewModel.OrderUpdated += (object sendler, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
+            OrderViewModel.OrderRemoved += (object sender, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
+            OrderViewModel.OrderUpdated += (object sender, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
         }
         
         
@@ -156,28 +157,25 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged("CountOrders");
             }
         }
-        public RelayCommand UpdateCustomer
+        
+        
+        public RelayCommand UpdateCustomer => _updateCustomer ?? (_updateCustomer = new RelayCommand(UpdateCustomerAsync));
+
+        private async void UpdateCustomerAsync(object obj)
         {
-            get
+            if (obj is Customer customerUpdated)
             {
-                return _updateCustomer ??
-                       (_updateCustomer = new RelayCommand(async obj =>
-                       {
-                           if (obj is Customer customerUpdated)
-                           {
-                               try
-                               {
-                                   await new CustomerController().UpdateAsync(customerUpdated);
-                                   UpdateCustomerEvent(customerUpdated);
-                               }
-                               catch (Exception ex) when (ex is IncorrectLongOrNullException)
-                               {
-                                   ErrorWindow errorWindow = new ErrorWindow(ex.Message);
-                                   errorWindow.Show();
-                               }
-                           }   
-                       }));
-            }
+                try
+                {
+                    await new CustomerController().UpdateAsync(customerUpdated);
+                    UpdateCustomerEvent(customerUpdated);
+                }
+                catch (Exception ex) when (ex is IncorrectLongOrNullException)
+                {
+                    ErrorWindow errorWindow = new ErrorWindow(ex.Message);
+                    errorWindow.Show();
+                }
+            }   
         }
         
         
@@ -185,23 +183,24 @@ namespace LpakViewClient.ModelView
         {
             get
             {
-                return _removeSelectedCustomer ??
-                       (_removeSelectedCustomer = new RelayCommand(async obj =>
-                       {
-                           if (obj is Customer customer)
-                           {
-                               try
-                               {
-                                   await new CustomerController().RemoveAsync(customer.CustomerId);
-                                   Customers.Remove(customer);
-                                   DeleteCustomerEvent(customer);
-                               }
-                               catch (RelatedRecordsException ex)
-                               {
-                                   new ErrorWindow(ex.Message).ShowDialog();
-                               }
-                           }
-                       }, (obj) => SelectedCustomer != null));
+                return _removeSelectedCustomer ?? (_removeSelectedCustomer = new RelayCommand(RemoveSelectedCustomerAsync, (obj) => SelectedCustomer != null));
+            }
+        }
+
+        private async void RemoveSelectedCustomerAsync(object obj)
+        {
+            if (obj is Customer customer)
+            {
+                try
+                {
+                    await new CustomerController().RemoveAsync(customer.CustomerId);
+                    Customers.Remove(customer);
+                    DeleteCustomerEvent(customer);
+                }
+                catch (RelatedRecordsException ex)
+                {
+                    new ErrorWindow(ex.Message).ShowDialog();
+                }
             }
         }
         
@@ -209,20 +208,21 @@ namespace LpakViewClient.ModelView
         {
             get
             {
-                return _removeSelectedOrder??
-                       (_removeSelectedOrder = new RelayCommand(async obj =>
-                       {
-                           if (obj is Order order)
-                           {
-                               await new OrderController().RemoveAsync(order.Id);
-                               Customer old = SelectedCustomer;
-                               SelectedCustomer.Orders.Remove(order);
-                               SelectedCustomer = null;
-                               GetLoadedCustomers();
-                               SelectedCustomer = old;
-                               OrderRemovedEvent(order);
-                           }
-                       }, (obj) => SelectedOrder!= null));
+                return _removeSelectedOrder ?? (_removeSelectedOrder = new RelayCommand(RemoveSelectedOrderAsync, (obj) => SelectedOrder != null));
+            }
+        }
+
+        private async void RemoveSelectedOrderAsync(object obj)
+        {
+            if (obj is Order order)
+            {
+                await new OrderController().RemoveAsync(order.Id);
+                Customer old = SelectedCustomer;
+                SelectedCustomer.Orders.Remove(order);
+                SelectedCustomer = null;
+                GetLoadedCustomers();
+                SelectedCustomer = old;
+                OrderRemovedEvent(order);
             }
         }
         
@@ -232,11 +232,11 @@ namespace LpakViewClient.ModelView
             get
             {
                 return _addNewCustomerOpenWindow ??
-                       (_addNewCustomerOpenWindow = new RelayCommand(async obj =>
+                       (_addNewCustomerOpenWindow = new RelayCommand( obj =>
                            {
                                if (obj is CustomerViewModel customerViewModel)
                                {
-                                   AddCustomerWindow addNewCustomerOpenWindow =
+                                   var addNewCustomerOpenWindow =
                                        new AddCustomerWindow(customerViewModel);
                                    addNewCustomerOpenWindow.Show();
                                }
@@ -248,15 +248,11 @@ namespace LpakViewClient.ModelView
         {
             get
             {
-                if (_addCustomerCommand == null)
-                {
-                    _addCustomerCommand = new RelayCommand(AddCustomerExecute, (obj) => true);
-                }
-                
-                return _addCustomerCommand;
+                return _addCustomerCommand ??
+                       (_addCustomerCommand = new RelayCommand(AddCustomerExecute, (obj) => true));
             }
         }
-
+        
         private async void AddCustomerExecute(object parameter)
         {
             try
@@ -270,7 +266,7 @@ namespace LpakViewClient.ModelView
             }
             catch (Exception ex) when (HandlerException.IsHandledException(ex))
             {
-                ErrorWindow errorWindow = new ErrorWindow(ex.Message);
+                var errorWindow = new ErrorWindow(ex.Message);
                 errorWindow.Show();
             }
         }
@@ -301,8 +297,6 @@ namespace LpakViewClient.ModelView
             AddOrderEvent(e);
         }
         
-        
-        /*************/
         public static event EventHandler<CustomerEventArgs> CustomerAdded;
         public static event EventHandler<CustomerEventArgs> CustomerDeleted;
         public static event EventHandler<CustomerEventArgs> CustomerUpdated;
@@ -336,9 +330,6 @@ namespace LpakViewClient.ModelView
             //  обновления Customer
             CustomerUpdated?.Invoke(null, new CustomerEventArgs(customer));
         }
-        
-        
-        /***********************************/
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

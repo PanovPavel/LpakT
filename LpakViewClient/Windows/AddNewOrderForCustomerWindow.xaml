@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:LpakViewClient.Windows"
         xmlns:modelView="clr-namespace:LpakViewClient.ModelView"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
@@ -17,7 +16,7 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <StackPanel Width="400">
+        <StackPanel Width="400" Margin="0 25 0 0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
                 <TextBlock VerticalAlignment="Center">Status</TextBlock>
                 <ComboBox x:Name="Status_Combobox" ItemsSource="{Binding Statuses}"

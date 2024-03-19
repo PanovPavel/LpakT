@@ -5,7 +5,7 @@ namespace LpakViewClient.Event
 {
     public class CustomerEventArgs : EventArgs
     {
-        public Customer Customer { get; set; }
+        public Customer Customer { get; }
 
         public CustomerEventArgs(Customer customer)
         {

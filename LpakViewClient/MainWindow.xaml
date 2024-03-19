@@ -23,7 +23,7 @@
                       CommandParameter="{Binding}" />
         </ContextMenu>
         <lpakViewClient:DateTimeConverter x:Key="DateTimeVisibilityConverter" />
-        
+
 
     </Window.Resources>
     <TabControl>
@@ -99,7 +99,7 @@
 
         <!--********************************-->
 
-        <TabItem Header="Заказы" >
+        <TabItem Header="Заказы">
             <TabItem.DataContext>
                 <modelView:OrderViewModel></modelView:OrderViewModel>
             </TabItem.DataContext>
@@ -117,22 +117,23 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
-                
+
                 <StackPanel>
                 </StackPanel>
-                <Grid>
+                <Grid Grid.Column="0">
                     <DataGrid SelectionMode="Single"
                               ItemsSource="{Binding Orders}"
                               SelectedItem="{Binding SelectedOrder}" AutoGenerateColumns="False"
-                              ContextMenu="{StaticResource RowContextMenuOrder}"
-                              >
+                              ContextMenu="{StaticResource RowContextMenuOrder}">
                         <DataGrid.Columns>
                             <DataGridTextColumn IsReadOnly="True" Header="Id" Binding="{Binding Id}" />
                             <DataGridTextColumn IsReadOnly="True" Header="Стутус" Binding="{Binding Status.Name}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="CustomerId" Binding="{Binding CustomerId}" />
+                            <DataGridTextColumn IsReadOnly="True" Header="CustomerId"
+                                                Binding="{Binding CustomerId}" />
                             <DataGridTextColumn IsReadOnly="True" Header="Время"
                                                 Binding="{Binding DateTimeCreatedOrder}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="Имя работы" Binding="{Binding NameOfWork}" />
+                            <DataGridTextColumn IsReadOnly="True" Header="Имя работы"
+                                                Binding="{Binding NameOfWork}" />
                             <DataGridTextColumn IsReadOnly="True" Header="Описание работ"
                                                 Binding="{Binding DescriptionOfWork}" />
                         </DataGrid.Columns>
@@ -144,9 +145,8 @@
                              DisplayMemberPath="Name"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Top"
-                             Margin="10" 
-                             SelectionChanged="ListBox_SelectionChanged"
-                             />
+                             Margin="10"
+                             SelectionChanged="ListBox_SelectionChanged" />
 
                 </Grid>
             </Grid>

@@ -16,85 +16,11 @@ namespace LpakViewClient.ModelView
         private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
         private Order _selectedOrder;
         private ObservableCollection<Customer> _selectedCustomers;
-
-
-        public ObservableCollection<Order> Orders
-        {
-            get { return _orders; }
-            set
-            {
-                _orders = value;
-                OnPropertyChanged(nameof(Orders));
-            }
-        }
-
-        public ObservableCollection<Customer> Customers
-        {
-            get { return _customers; }
-            set
-            {
-                _customers = value;
-                OnPropertyChanged(nameof(Customers));
-            }
-        }
-
-
-        public ObservableCollection<Customer> SelectedCustomers
-        {
-            get { return _selectedCustomers; }
-            set
-            {
-                _selectedCustomers = value;
-                OnPropertyChanged(nameof(SelectedCustomers));
-                UpdateFilteredOrders(value);
-            }
-        }
-
-        
         private StatusOrder _selectedStatus;
-
-        public StatusOrder SelectedStatus
-        {
-            get => _selectedStatus;
-            set
-            {
-                _selectedStatus = value;
-                OnPropertyChanged("SelectedStatus");
-                StatusSelectedChanged?.Invoke(this, value.Id);
-            }
-        }
-
         private ObservableCollection<StatusOrder> _statuses = new ObservableCollection<StatusOrder>();
-
-        public ObservableCollection<StatusOrder> Statuses
-        {
-            get => _statuses;
-            set
-            {
-                _statuses = value;
-                OnPropertyChanged("Statuses");
-            }
-        }
-
-        public event EventHandler<Guid> StatusSelectedChanged;
-        
-
-
-        public Order SelectedOrder
-        {
-            get { return _selectedOrder; }
-            set
-            {
-                _selectedOrder = value;
-                OnPropertyChanged(nameof(SelectedOrder));
-                OnPropertyChanged("SelectedOrder");
-                if (_selectedOrder != null)
-                {
-                    SelectedStatus = Statuses.FirstOrDefault(status => status.Name == _selectedOrder.Status.Name);
-                }
-            }
-        }
-
+        private RelayCommand _updateOrderCommand;
+        private RelayCommand _removeSelectedOrder;
+        private RelayCommand _openWindowUpdateSelectedOrder;
 
         public OrderViewModel()
         {
@@ -105,39 +31,7 @@ namespace LpakViewClient.ModelView
             CustomerViewModel.OrderAdded += OrderAddedEventHandler;
             CustomerViewModel.OrderRemoved += OrderRemovedEventHandler;
         }
-
-        private void OrderRemovedEventHandler(object sender, OrderEventArgs e)
-        {
-            Orders.RemoveAt(Orders.IndexOf(e.Order));
-        }
-
-        private void OrderAddedEventHandler(object sender, OrderEventArgs e)
-        {
-            Orders.Insert(0, e.Order);
-        }
-
-        private void DeleteCustomerEventHandler(object sender, CustomerEventArgs e)
-        {
-            int indexRemove = Customers.IndexOf(e.Customer);
-            Customers.RemoveAt(indexRemove);
-        }
-
-        private void UpdateCustomerEventHandler(object sender, CustomerEventArgs e)
-        {
-            var customer = Customers.First(c => c.CustomerId == e.Customer.CustomerId);
-            int indexOldCustomer = Customers.IndexOf(customer);
-            Customers.RemoveAt(indexOldCustomer);
-            Customers.Insert(indexOldCustomer, e.Customer);
-        }
-
-        private void AddCustomerEventHandler(object sender, CustomerEventArgs e)
-        {
-            if (e != null && e.Customer != null)
-            {
-                Customers.Add(e.Customer);
-            }
-        }
-
+        
         private async void GetData()
         {
             
@@ -163,6 +57,70 @@ namespace LpakViewClient.ModelView
             }
         }
 
+        public ObservableCollection<Order> Orders
+        {
+            get => _orders;
+            set
+            {
+                _orders = value;
+                OnPropertyChanged(nameof(Orders));
+            }
+        }
+
+        public ObservableCollection<Customer> Customers
+        {
+            get => _customers;
+            set
+            {
+                _customers = value;
+                OnPropertyChanged(nameof(Customers));
+            }
+        }
+
+        public ObservableCollection<StatusOrder> Statuses
+        {
+            get => _statuses;
+            set
+            {
+                _statuses = value;
+                OnPropertyChanged("Statuses");
+            }
+        }
+        public ObservableCollection<Customer> SelectedCustomers
+        {
+            get => _selectedCustomers;
+            set
+            {
+                _selectedCustomers = value;
+                OnPropertyChanged(nameof(SelectedCustomers));
+                UpdateFilteredOrders(value);
+            }
+        }
+        public Order SelectedOrder
+        {
+            get => _selectedOrder;
+            set
+            {
+                _selectedOrder = value;
+                OnPropertyChanged(nameof(SelectedOrder));
+                OnPropertyChanged("SelectedOrder");
+                if (_selectedOrder != null)
+                {
+                    SelectedStatus = Statuses.FirstOrDefault(status => status.Name == _selectedOrder.Status.Name);
+                }
+            }
+        }
+        public StatusOrder SelectedStatus
+        {
+            get => _selectedStatus;
+            set
+            {
+                _selectedStatus = value;
+                OnPropertyChanged("SelectedStatus");
+                StatusSelectedChanged?.Invoke(this, value.Id);
+            }
+        }
+
         private void UpdateFilteredOrders(ObservableCollection<Customer> selectedCustomers)
         {
             if (selectedCustomers.Count == 0)
@@ -182,34 +140,31 @@ namespace LpakViewClient.ModelView
             }
         }
 
-        private RelayCommand _removeSelectedOrder;
 
         public RelayCommand RemoveSelectedOrder
         {
             get
             {
-                return _removeSelectedOrder ?? (
-                    _removeSelectedOrder = new RelayCommand(async obj =>
-                    {
-                        if (obj is Order order)
-                        {
-                            try
-                            {
-                                await new OrderController().RemoveAsync(order.Id);
-                                Orders.Remove(order);
-                                OrderRemovedEvent(order);
-                            }
-                            catch (Exception e)
-                            {
-                                new ErrorWindow(e.Message).ShowDialog();
-                            }
-                        }
-                    }, obj => SelectedOrder != null));
+                return _removeSelectedOrder ?? (_removeSelectedOrder = new RelayCommand(RemoveSelectedOrderAsync, obj => SelectedOrder != null));
             }
         }
 
-        public RelayCommand _openWindowUpdateSelectedOrder;
-
+        private async void RemoveSelectedOrderAsync(object obj)
+        {
+            if (obj is Order order)
+            {
+                try
+                {
+                    await new OrderController().RemoveAsync(order.Id);
+                    Orders.Remove(order);
+                    OrderRemovedEvent(order);
+                }
+                catch (Exception e)
+                {
+                    new ErrorWindow(e.Message).ShowDialog();
+                }
+            }
+        }
         public RelayCommand OpenWindowUpdateSelectorCustomer
         {
             get
@@ -224,41 +179,74 @@ namespace LpakViewClient.ModelView
                     }, obj => SelectedOrder != null));
             }
         }
-
-        private RelayCommand _updateOrderCommand;
-
         public RelayCommand UpdateOrderCommand
         {
             get
             {
-                return _updateOrderCommand ?? (
-                    _updateOrderCommand = new RelayCommand(async obj =>
-                    {
-                        if (obj is OrderViewModel orderViewModel)
-                        {
-                            if (orderViewModel.SelectedOrder != null)
-                            {
-                                Order newOrder = orderViewModel.SelectedOrder;
-                                newOrder.Status = orderViewModel.SelectedStatus;
-                                await new OrderController().UpdateAsync(newOrder);
-                                GetData();
-                                OrderUpdatedEvent(newOrder);
-                            }
-                        }
-                    }, obj => SelectedOrder != null)
-                );
+                return _updateOrderCommand ?? (_updateOrderCommand = new RelayCommand(UpdateOrderCommandAsync, obj => SelectedOrder != null));
             }
         }
 
+        private async void UpdateOrderCommandAsync(object obj)
+        {
+            if (obj is OrderViewModel orderViewModel)
+            {
+                if (orderViewModel.SelectedOrder != null)
+                {
+                    Order newOrder = orderViewModel.SelectedOrder;
+                    newOrder.Status = orderViewModel.SelectedStatus;
+                    await new OrderController().UpdateAsync(newOrder);
+                    GetData();
+                    OrderUpdatedEvent(newOrder);
+                }
+            }
+        }
+        
+        private void OrderRemovedEventHandler(object sender, OrderEventArgs e)
+        {
+            var order = Orders.First(o => o.Id == e.Order.Id);
+            int removeIndex = Orders.IndexOf(e.Order);
+            Orders.RemoveAt(removeIndex);
+        }
+
+        private void OrderAddedEventHandler(object sender, OrderEventArgs e)
+        {
+            Orders.Insert(0, e.Order);
+        }
+
+        private void DeleteCustomerEventHandler(object sender, CustomerEventArgs e)
+        {
+            var customer = Customers.First(c => c.CustomerId == e.Customer.CustomerId);
+            var indexRemove = Customers.IndexOf(customer);
+            Customers.RemoveAt(indexRemove);
+        }
+
+        private void UpdateCustomerEventHandler(object sender, CustomerEventArgs e)
+        {
+            var customer = Customers.First(c => c.CustomerId == e.Customer.CustomerId);
+            var indexOldCustomer = Customers.IndexOf(customer);
+            Customers.RemoveAt(indexOldCustomer);
+            Customers.Insert(indexOldCustomer, e.Customer);
+        }
+
+        private void AddCustomerEventHandler(object sender, CustomerEventArgs e)
+        {
+            if (e != null && e.Customer != null)
+            {
+                Customers.Add(e.Customer);
+            }
+        }
+        
+        public event EventHandler<Guid> StatusSelectedChanged;
         public static event EventHandler<OrderEventArgs> OrderUpdated;
 
-        public static void OrderUpdatedEvent(Order order)
+        private static void OrderUpdatedEvent(Order order)
         {
             OrderUpdated?.Invoke(null, new OrderEventArgs(order));
         }
         public static event EventHandler<OrderEventArgs> OrderRemoved;
 
-        public static void OrderRemovedEvent(Order order)
+        private static void OrderRemovedEvent(Order order)
         {
             OrderRemoved?.Invoke(null, new OrderEventArgs(order));
         }

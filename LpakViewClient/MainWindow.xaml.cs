@@ -23,11 +23,9 @@ namespace LpakViewClient
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listBox = sender as ListBox;
-            if (listBox != null)
+            if (sender is ListBox listBox)
             {
-                var viewModel = listBox.DataContext as OrderViewModel;
-                if (viewModel != null)
+                if (listBox.DataContext is OrderViewModel viewModel)
                 {
                     var selectedItems = new ObservableCollection<Customer>();
                     foreach (var selectedItem in listBox.SelectedItems)

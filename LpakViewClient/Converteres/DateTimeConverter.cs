@@ -11,15 +11,15 @@ namespace LpakViewClient
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTime dateTime && dateTime == DateTime.MinValue)
+            switch (value)
             {
-                return null;
+                case DateTime dateTime when dateTime == DateTime.MinValue:
+                    return null;
+                case DateTime date:
+                    return date.ToString("dd.MM.yyyy");
+                default:
+                    return value;
             }
-            else if (value is DateTime date)
-            {
-                return date.ToString("dd.MM.yyyy");
-            }
-            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

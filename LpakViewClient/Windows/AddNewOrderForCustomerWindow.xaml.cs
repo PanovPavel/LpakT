@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using LpakBL.Controller;
 using LpakBL.Model;
+using LpakViewClient.Exceptions;
 using LpakViewClient.ModelView;
 
 namespace LpakViewClient.Windows

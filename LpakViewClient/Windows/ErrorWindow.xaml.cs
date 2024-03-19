@@ -1,6 +1,4 @@
-using System.Windows;
-
-namespace LpakViewClient
+namespace LpakViewClient.Windows
 {
     public partial class ErrorWindow
     {

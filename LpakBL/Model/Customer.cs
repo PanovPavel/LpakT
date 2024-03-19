@@ -50,7 +50,7 @@ namespace LpakBL.Model
             set
             {
                 _fieldOfBusiness = value;
-                OnPropertyChanged(nameof(FieldOfBusiness));
+                OnPropertyChanged("FieldOfBusiness");
             }
         }
 
@@ -60,7 +60,7 @@ namespace LpakBL.Model
             set
             {
                 _orders = value ?? throw new ArgumentNullException(nameof(Orders), "Orders can't be null"); 
-                OnPropertyChanged(nameof(Orders));
+                OnPropertyChanged("Orders");
             }
         }
         

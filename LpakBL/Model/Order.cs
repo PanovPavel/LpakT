@@ -91,30 +91,7 @@ namespace LpakBL.Model
             get => _status;
             set => _status = value ?? throw new ArgumentNullException(nameof(Status), "Status can not be null");
         }
-
-        /*public override bool Equals(object obj)
-        {
-            if (obj is Order order)
-            {
-                if(this.Id == order.Id) return true;
-            }
-            return false;
-        }
         
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (_nameOfWork != null ? _nameOfWork.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (_descriptionOfWork != null ? _descriptionOfWork.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ _dateTimeCreatedOrder.GetHashCode();
-                hashCode = (hashCode * 397) ^ _customerId.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_status != null ? _status.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ Id.GetHashCode();
-                return hashCode;
-            }
-        }*/
-
         public override string ToString()
         {
             return $"{nameof(Id)}: {Id}, {nameof(DateTimeCreatedOrder)}: {DateTimeCreatedOrder}, " +

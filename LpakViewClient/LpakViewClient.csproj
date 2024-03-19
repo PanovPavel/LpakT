@@ -56,7 +56,7 @@
     <Compile Include="Converteres\DateTimeConverter.cs" />
     <Compile Include="Event\CustomerEventArgs.cs" />
     <Compile Include="Event\OrderEventArgs.cs" />
-    <Compile Include="Exception\HandlerException.cs" />
+    <Compile Include="Exceptions\HandlerException.cs" />
     <Compile Include="ModelView\StatusViewModel.cs" />
     <Compile Include="Windows\AddCustomerWindow.xaml.cs">
       <DependentUpon>AddCustomerWindow.xaml</DependentUpon>

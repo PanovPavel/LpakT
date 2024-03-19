@@ -29,24 +29,6 @@ namespace LpakBL.Model
         {
             
         }
-        
-        
-        /*
-        
-        public static StatusOrder NewWorkCreated()
-        {
-            return new StatusOrder("Новый");
-        }
-        public static StatusOrder InOfWorkCreated()
-        {
-            return new StatusOrder("В работе");
-        }
-
-        public static StatusOrder FinishedWorkCreated()
-        {
-            return new StatusOrder("Выполнен");
-        }
-        */
         public override string ToString()
         {
             return $"{Id} {Name}";

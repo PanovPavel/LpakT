@@ -10,7 +10,7 @@ namespace LpakBL.Controller
 {
     public class OrderController : IRepositoryAsync<Order>
     {
-        public string ConnectionString { get; }
+        public string ConnectionString { get; set; }
         
         public OrderController()
         {
@@ -47,7 +47,6 @@ namespace LpakBL.Controller
             }
             return ordersList;
         }
-        //TODO: Удалить из ORDER любые упоминания о Customer
         public async Task<Order> GetAsync(Guid id)
         {
             Order order = null;            
@@ -73,7 +72,6 @@ namespace LpakBL.Controller
                 return order ?? throw new NotFoundByIdException("Order with gived ID not found");
             }
         }
-
         public async Task<Order> AddAsync(Order order)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))

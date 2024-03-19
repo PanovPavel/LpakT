@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.Windows;
 using LpakBL.Controller;
 using LpakBL.Model;
+using LpakViewClient.Exceptions;
 using LpakViewClient.ModelView;
 
-namespace LpakViewClient
+namespace LpakViewClient.Windows
 {
     public partial class ChangeCustomerWindow
     {
