@@ -50,7 +50,7 @@ namespace LpakViewClient.ModelView
             }
         }
 
-        /*********************************************/
+        
         private StatusOrder _selectedStatus;
 
         public StatusOrder SelectedStatus
@@ -77,7 +77,7 @@ namespace LpakViewClient.ModelView
         }
 
         public event EventHandler<Guid> StatusSelectedChanged;
-        /******************************************/
+        
 
 
         public Order SelectedOrder
@@ -108,7 +108,7 @@ namespace LpakViewClient.ModelView
 
         private void OrderRemovedEventHandler(object sender, OrderEventArgs e)
         {
-            Orders.Remove(e.Order);
+            Orders.RemoveAt(Orders.IndexOf(e.Order));
         }
 
         private void OrderAddedEventHandler(object sender, OrderEventArgs e)
@@ -238,10 +238,11 @@ namespace LpakViewClient.ModelView
                         {
                             if (orderViewModel.SelectedOrder != null)
                             {
-                                Order newOrders = orderViewModel.SelectedOrder;
-                                newOrders.Status = orderViewModel.SelectedStatus;
-                                await new OrderController().UpdateAsync(newOrders);
+                                Order newOrder = orderViewModel.SelectedOrder;
+                                newOrder.Status = orderViewModel.SelectedStatus;
+                                await new OrderController().UpdateAsync(newOrder);
                                 GetData();
+                                OrderUpdatedEvent(newOrder);
                             }
                         }
                     }, obj => SelectedOrder != null)
@@ -249,7 +250,12 @@ namespace LpakViewClient.ModelView
             }
         }
 
+        public static event EventHandler<OrderEventArgs> OrderUpdated;
 
+        public static void OrderUpdatedEvent(Order order)
+        {
+            OrderUpdated?.Invoke(null, new OrderEventArgs(order));
+        }
         public static event EventHandler<OrderEventArgs> OrderRemoved;
 
         public static void OrderRemovedEvent(Order order)

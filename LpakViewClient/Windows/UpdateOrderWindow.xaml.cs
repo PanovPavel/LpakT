@@ -20,5 +20,10 @@ namespace LpakViewClient.Windows
             InitializeComponent();
             this.DataContext = orderViewModel;
         }
+
+        private void CloseWindow_ClickButtonСhange(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

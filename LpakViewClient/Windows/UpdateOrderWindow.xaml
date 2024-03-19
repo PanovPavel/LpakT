@@ -44,12 +44,12 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock VerticalAlignment="Center">DescriptionOfWork</TextBlock>
-                <TextBox Style="{StaticResource TextBoxStyle}" />
+                <TextBox Text="{Binding SelectedOrder.DescriptionOfWork}" Style="{StaticResource TextBoxStyle}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <DatePicker IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{Binding SelectedOrder.DateTimeCreatedOrder}" />
             </StackPanel>
-            <Button Command="{Binding UpdateOrderCommand}" CommandParameter="{Binding}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
+            <Button Click="CloseWindow_ClickButtonСhange" Command="{Binding UpdateOrderCommand}" CommandParameter="{Binding}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
         </StackPanel>
     </Grid>
 
