@@ -32,16 +32,15 @@ namespace LpakBL.Controller
 
         public async Task<List<Customer>> GetListAsync()
         {
-            List<Customer> customers = new List<Customer>();
+            var customers = new List<Customer>();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 await connection.OpenAsync();
                 var readerCustomer = await new SqlCommand("SELECT * FROM Customer", connection).ExecuteReaderAsync();
                 while (readerCustomer.Read())
                 {
-                    FieldOfBusiness fieldOfBusiness = await new FieldOfBusinessController().GetAsync(readerCustomer.GetGuid(4));
+                    var fieldOfBusiness = await new FieldOfBusinessController().GetAsync(readerCustomer.GetGuid(4));
                     List<Order> orders = await GetOrdersForCustomerAsync(readerCustomer.GetGuid(0));
-                    
                     string comment = readerCustomer.IsDBNull(3)?"":readerCustomer.GetString(3);
                     Customer customer = new Customer(
                         readerCustomer.GetGuid(0),

@@ -53,6 +53,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Control\CommentControl.xaml.cs">
+      <DependentUpon>CommentControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\TableAllOrdersControl.xaml.cs">
+      <DependentUpon>TableAllOrdersControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\TableCustomersControl.xaml.cs">
+      <DependentUpon>TableCustomersControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\TableOrdersForUser.xaml.cs">
+      <DependentUpon>TableOrdersForUser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\UsersListBox.xaml.cs">
+      <DependentUpon>UsersListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converteres\DateTimeConverter.cs" />
     <Compile Include="Event\CustomerEventArgs.cs" />
     <Compile Include="Event\OrderEventArgs.cs" />
@@ -73,6 +88,11 @@
     <Compile Include="Windows\UpdateOrderWindow.xaml.cs">
       <DependentUpon>UpdateOrderWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Control\CommentControl.xaml" />
+    <Page Include="Control\TableAllOrdersControl.xaml" />
+    <Page Include="Control\TableCustomersControl.xaml" />
+    <Page Include="Control\TableOrdersForUser.xaml" />
+    <Page Include="Control\UsersListBox.xaml" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,7 +141,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Control\" />
     <Folder Include="ModelView\Command\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

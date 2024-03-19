@@ -6,6 +6,7 @@
         xmlns:modelView="clr-namespace:LpakViewClient.ModelView"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:lpakViewClient="clr-namespace:LpakViewClient"
+        xmlns:control="clr-namespace:LpakViewClient.Control"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1200">
 
@@ -14,17 +15,15 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <ContextMenu x:Key="RowContextMenu">
+        <!--<ContextMenu x:Key="RowContextMenu">
             <MenuItem Header="Изменить" Command="{Binding UpdateCustomerOpenWindow}"
                       CommandParameter="{Binding }" />
             <MenuItem Header="Удалить объект" Command="{Binding RemoveSelectedCustomer}"
                       CommandParameter="{Binding SelectedCustomer}" />
             <MenuItem Header="Добавить объект" Command="{Binding AddNewCustomerOpenWindow}"
                       CommandParameter="{Binding}" />
-        </ContextMenu>
+        </ContextMenu>-->
         <lpakViewClient:DateTimeConverter x:Key="DateTimeVisibilityConverter" />
-
-
     </Window.Resources>
     <TabControl>
         <TabItem Header="Клиенты">
@@ -38,54 +37,9 @@
                     <RowDefinition Height="1"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-
-                <DataGrid Grid.RowSpan="2" Grid.Row="0" Grid.Column="0" SelectionMode="Single"
-                          ItemsSource="{Binding Customers}"
-                          SelectedItem="{Binding SelectedCustomer}" AutoGenerateColumns="False"
-                          ContextMenu="{StaticResource RowContextMenu}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn IsReadOnly="True" Header="Id" Binding="{Binding CustomerId}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="Name" Binding="{Binding Name}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="TaxNumber" Binding="{Binding TaxNumber}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="FieldOfBusiness"
-                                            Binding="{Binding FieldOfBusiness.Name}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="Comment" Binding="{Binding Comment}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="OrdersCount" Binding="{Binding Orders.Count}" />
-                        <DataGridTextColumn x:Name="LastDataTimeGrid" IsReadOnly="True" Header="OrdersCount"
-                                            Binding="{Binding LastDateTimeOrder, Converter={StaticResource DateTimeVisibilityConverter} }" />
-                    </DataGrid.Columns>
-                </DataGrid>
-
-                <Grid Grid.Row="2" Grid.Column="0">
-                    <StackPanel>
-                        <TextBlock>Примечания к клиенту: </TextBlock>
-                        <TextBox Height="150" Text="{Binding SelectedCustomer.Comment, UpdateSourceTrigger=LostFocus}">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="LostFocus">
-                                    <b:InvokeCommandAction
-                                        Command="{Binding UpdateCustomer}"
-                                        CommandParameter="{Binding SelectedCustomer}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </TextBox>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Margin="0 0 0 100" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1">
-                    <DataGrid SelectionMode="Single" ItemsSource="{Binding SelectedCustomer.Orders}"
-                              SelectedItem="{Binding SelectedOrder}" AutoGenerateColumns="False">
-
-                        <DataGrid.Columns>
-                            <DataGridTextColumn IsReadOnly="True" Header="OrderId" Binding="{Binding Id}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="StatusOrder" Binding="{Binding Status.Name}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="DataCreated"
-                                                Binding="{Binding DateTimeCreatedOrder, Converter={StaticResource DateTimeVisibilityConverter}}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="NameWork" Binding="{Binding NameOfWork}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="DescriptionWork"
-                                                Binding="{Binding DescriptionOfWork}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                <control:TableCustomersControl Grid.RowSpan="2" Grid.Row="0" Grid.Column="0" />
+                <control:CommentControl Grid.Row="2" Grid.Column="0"></control:CommentControl>
+                <control:TableOrdersForUser Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"></control:TableOrdersForUser>
                 <Button Grid.Row="2" Height="50" Grid.Column="1" Command="{Binding OpenWindowAddNewOrderFoUser}"
                         CommandParameter="{Binding}">
                     Добавить заказ
@@ -96,59 +50,18 @@
                 </Button>
             </Grid>
         </TabItem>
-
-        <!--********************************-->
-
         <TabItem Header="Заказы">
             <TabItem.DataContext>
                 <modelView:OrderViewModel></modelView:OrderViewModel>
             </TabItem.DataContext>
 
             <Grid>
-                <Grid.Resources>
-                    <ContextMenu x:Key="RowContextMenuOrder">
-                        <MenuItem Header="Изменить" Command="{Binding OpenWindowUpdateSelectorCustomer}"
-                                  CommandParameter="{Binding }" />
-                        <MenuItem Header="Удалить" Command="{Binding RemoveSelectedOrder }"
-                                  CommandParameter="{Binding SelectedOrder}" />
-                    </ContextMenu>
-                </Grid.Resources>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
-
-                <StackPanel>
-                </StackPanel>
-                <Grid Grid.Column="0">
-                    <DataGrid SelectionMode="Single"
-                              ItemsSource="{Binding Orders}"
-                              SelectedItem="{Binding SelectedOrder}" AutoGenerateColumns="False"
-                              ContextMenu="{StaticResource RowContextMenuOrder}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn IsReadOnly="True" Header="Id" Binding="{Binding Id}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="Стутус" Binding="{Binding Status.Name}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="CustomerId"
-                                                Binding="{Binding CustomerId}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="Время"
-                                                Binding="{Binding DateTimeCreatedOrder}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="Имя работы"
-                                                Binding="{Binding NameOfWork}" />
-                            <DataGridTextColumn IsReadOnly="True" Header="Описание работ"
-                                                Binding="{Binding DescriptionOfWork}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <ListBox ItemsSource="{Binding Customers}"
-                             SelectionMode="Multiple"
-                             DisplayMemberPath="Name"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Top"
-                             Margin="10"
-                             SelectionChanged="ListBox_SelectionChanged" />
-
-                </Grid>
+                <control:TableAllOrdersControl Grid.Column="0"></control:TableAllOrdersControl>
+                <control:UsersListBox Grid.Column="1"></control:UsersListBox>
             </Grid>
         </TabItem>
     </TabControl>
