@@ -119,22 +119,22 @@ namespace LpakViewClient.ModelView
         private void DeleteCustomerEventHandler(object sender, CustomerEventArgs e)
         {
             int indexRemove = Customers.IndexOf(e.Customer);
-            bool b = Customers.Remove(e.Customer);
+            Customers.RemoveAt(indexRemove);
         }
 
         private void UpdateCustomerEventHandler(object sender, CustomerEventArgs e)
         {
             var customer = Customers.First(c => c.CustomerId == e.Customer.CustomerId);
             int indexOldCustomer = Customers.IndexOf(customer);
-            Customers.Remove(customer);
+            Customers.RemoveAt(indexOldCustomer);
             Customers.Insert(indexOldCustomer, e.Customer);
         }
 
         private void AddCustomerEventHandler(object sender, CustomerEventArgs e)
         {
-            if (e is CustomerEventArgs customer)
+            if (e != null && e.Customer != null)
             {
-                Customers.Add(customer.Customer);
+                Customers.Add(e.Customer);
             }
         }
 

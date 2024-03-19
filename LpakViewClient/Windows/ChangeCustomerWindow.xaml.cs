@@ -41,6 +41,7 @@ namespace LpakViewClient
                     fildOfBusinessName, oldCustomer.Orders);
                 await customerController.UpdateAsync(newModifiedCustomer);
                 this.Close();
+                CustomerViewModel.UpdateCustomerEvent(newModifiedCustomer);
             }
             catch (Exception ex) when (HandlerException.IsHandledException(ex))
             {
