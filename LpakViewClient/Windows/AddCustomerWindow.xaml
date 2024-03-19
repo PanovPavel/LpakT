@@ -21,7 +21,8 @@
                 <TextBox Style="{StaticResource TextBoxStyle}"
                          Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock VerticalAlignment="Center">TaxNumber</TextBlock>
                 <TextBox Style="{StaticResource TextBoxStyle}"
                          Text="{Binding TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />

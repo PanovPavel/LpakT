@@ -2,7 +2,7 @@ using System.Windows;
 
 namespace LpakViewClient
 {
-    public partial class ErrorWindow : Window
+    public partial class ErrorWindow
     {
         public ErrorWindow()
         {

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using LpakBL.Model.Exception;
 using LpakBL.Model.NumberCompanyValidator;
 
@@ -116,6 +115,17 @@ namespace LpakBL.Model
             }
         }
 
+        public DateTime LastDateTimeOrder
+        {
+            get
+            {
+                if (Orders != null && Orders.Count > 0)
+                {
+                    return Orders.OrderByDescending(d => d.DateTimeCreatedOrder).Select(d => d.DateTimeCreatedOrder).First();
+                }
+                return DateTime.MinValue;
+            }
+        }
 
         public override string ToString()
         {
@@ -124,27 +134,29 @@ namespace LpakBL.Model
 
 
         //TODO: Переписать Equals и GetHashCode
-        /*public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is Customer customer)
             {
-                return this.CustomerId.ToString() == customer.CustomerId.ToString();
+                if(this.CustomerId == customer.CustomerId) return true;
             }
-
             return false;
-        }*/
+        }
 
-        /*public override int GetHashCode()
+        public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = (Name != null ? Name.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Comment != null ? Comment.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (TaxNumber != null ? TaxNumber.GetHashCode() : 0);
+                var hashCode = (_name != null ? _name.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_comment != null ? _comment.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_taxNumber != null ? _taxNumber.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_orders != null ? _orders.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_fieldOfBusiness != null ? _fieldOfBusiness.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ CustomerId.GetHashCode();
                 return hashCode;
             }
-        }*/
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

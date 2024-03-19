@@ -7,28 +7,50 @@ using LpakBL.Controller;
 using LpakBL.Controller.Exception;
 using LpakBL.Model;
 using LpakBL.Model.Exception;
+using LpakViewClient.Event;
+using LpakViewClient.Windows;
 
 namespace LpakViewClient.ModelView
 {
+  
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class CustomerViewModel : INotifyPropertyChanged
     {
         public CustomerViewModel()
         {
             GetLoadedCustomers();
+            AddNewOrderForCustomerWindow.AddOrderForUser += ViewModelUpdateCustomerOrders;
+            OrderViewModel.OrderRemoved += (object sendler, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
+            
         }
+        
+        
+
         private async void GetLoadedCustomers()
         {
             List<Customer> customersList = await new CustomerController().GetListAsync();
-            Customers = new ObservableCollection<Customer>(customersList);
+            Customers.Clear(); // Очистка существующего списка
+            foreach (var customer in customersList)
+            {
+                Customers.Add(customer); // Добавление каждого клиента в существующую коллекцию
+            }
         }
-
+        
+        private DateTime _lastDateTimeOrder;
+        public DateTime LastDateTimeOrder
+        {
+            get=> _lastDateTimeOrder;
+            set
+            {
+                _lastDateTimeOrder = value;
+                OnPropertyChanged("LastDateTimeOrder");
+            }
+        }
         private RelayCommand _updateCustomerOpenWindow, _removeSelectedCustomer, _addNewCustomerOpenWindow, _addCustomerCommand, _removeSelectedOrder, _updateCustomer;
         private string _name, _fieldOfBusinessName,_taxNumber,_comment;
         private Order _selectedOrder;
         private Customer _selectedCustomer;
         private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
-
         public string Name
         {
             get => _name;
@@ -52,10 +74,12 @@ namespace LpakViewClient.ModelView
             get => _taxNumber;
             set
             {
-                _taxNumber = value;
+                    _taxNumber = value;
+                    if(value == "12") throw new InvalidTaxNumber(nameof(TaxNumber), "Value cannot be null or empty string");
                 OnPropertyChanged("TaxNumber");
             }
         }
+        
         public string Comment
         {
             get => _comment;
@@ -75,6 +99,7 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged("Customers");
             }
         }
+        
         public Order SelectedOrder
         {
             get => _selectedOrder;
@@ -84,6 +109,8 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged("SelectedOrder");
             }
         }
+
+
         
         public Customer SelectedCustomer
         {
@@ -93,15 +120,6 @@ namespace LpakViewClient.ModelView
                 _selectedCustomer = value;
                 OnPropertyChanged("SelectedCustomer");
             }
-        }
-        private bool IsHandledException(Exception ex)
-        {
-            return ex is IncorrectLongOrNullException ||
-                   ex is InvalidTaxNumber ||
-                   ex is InvalidDateException ||
-                   ex is NotFoundByIdException ||
-                   ex is RelatedRecordsException ||
-                   ex is UniquenessStatusException;
         }
 
         private void ClearProperties()
@@ -128,7 +146,16 @@ namespace LpakViewClient.ModelView
                            (obj) => SelectedCustomer != null));
             }
         }
-
+        private int _countOrders;
+        public int CountOrders
+        {
+            get=>_countOrders;
+            set
+            {
+                _countOrders = SelectedCustomer.Orders.Count;
+                OnPropertyChanged("CountOrders");
+            }
+        }
         public RelayCommand UpdateCustomer
         {
             get
@@ -141,8 +168,9 @@ namespace LpakViewClient.ModelView
                                try
                                {
                                    await new CustomerController().UpdateAsync(customerUpdated);
+                                   UpdateCustomerEvent(customerUpdated);
                                }
-                               catch (Exception ex) when (IsHandledException(ex))
+                               catch (Exception ex) when (ex is IncorrectLongOrNullException)
                                {
                                    ErrorWindow errorWindow = new ErrorWindow(ex.Message);
                                    errorWindow.Show();
@@ -162,13 +190,21 @@ namespace LpakViewClient.ModelView
                        {
                            if (obj is Customer customer)
                            {
-                               await new CustomerController().RemoveAsync(customer.CustomerId);
-                               Customers.Remove(customer);
+                               try
+                               {
+                                   await new CustomerController().RemoveAsync(customer.CustomerId);
+                                   Customers.Remove(customer);
+                                   DeleteCustomerEvent(customer);
+                               }
+                               catch (RelatedRecordsException ex)
+                               {
+                                   new ErrorWindow(ex.Message).ShowDialog();
+                               }
                            }
                        }, (obj) => SelectedCustomer != null));
             }
         }
-
+        
         public RelayCommand RemoveSelectedOrder
         {
             get
@@ -179,16 +215,16 @@ namespace LpakViewClient.ModelView
                            if (obj is Order order)
                            {
                                await new OrderController().RemoveAsync(order.Id);
+                               Customer old = SelectedCustomer;
+                               SelectedCustomer.Orders.Remove(order);
+                               SelectedCustomer = null;
                                GetLoadedCustomers();
-                               
+                               SelectedCustomer = old;
+                               OrderRemovedEvent(order);
                            }
                        }, (obj) => SelectedOrder!= null));
             }
         }
-        
-        
-        
-        
         
         /**/
         public RelayCommand AddNewCustomerOpenWindow
@@ -216,7 +252,7 @@ namespace LpakViewClient.ModelView
                 {
                     _addCustomerCommand = new RelayCommand(AddCustomerExecute, (obj) => true);
                 }
-
+                
                 return _addCustomerCommand;
             }
         }
@@ -228,25 +264,82 @@ namespace LpakViewClient.ModelView
                 var customerController = new CustomerController();
                 var newCustomer = new Customer(Name, TaxNumber, Comment, new FieldOfBusiness(FieldOfBusinessName));
                 await customerController.AddAsync(newCustomer);
-
                 ClearProperties();
-                //GetLoadedCustomers();
                 Customers.Insert(0, newCustomer);
+                AddCustomerEvent(newCustomer);
             }
-            catch (Exception ex) when (IsHandledException(ex))
+            catch (Exception ex) when (HandlerException.IsHandledException(ex))
             {
                 ErrorWindow errorWindow = new ErrorWindow(ex.Message);
                 errorWindow.Show();
             }
         }
-        /**/
+        
+        private RelayCommand _openWindowAddNewOrderFoUser;
 
+        public RelayCommand OpenWindowAddNewOrderFoUser
+        {
+            get
+            {
+                return _openWindowAddNewOrderFoUser ??
+                       (_openWindowAddNewOrderFoUser = new RelayCommand(obj =>
+                           {
+                               if (obj is CustomerViewModel customerViewModel)
+                               {
+                                   new AddNewOrderForCustomerWindow(customerViewModel).Show();
+                               }
+                           },
+                           (obj) => SelectedCustomer != null));
+            }
+        }
+        private void ViewModelUpdateCustomerOrders(object sender, Order e)
+        {
+            SelectedCustomer.Orders.Add(e);
+            Customer old = SelectedCustomer;
+            GetLoadedCustomers();
+            SelectedCustomer = old;
+            AddOrderEvent(e);
+        }
+        
+        
+        /*************/
+        public static event EventHandler<CustomerEventArgs> CustomerAdded;
+        public static event EventHandler<CustomerEventArgs> CustomerDeleted;
+        public static event EventHandler<CustomerEventArgs> CustomerUpdated;
+        public static event EventHandler<OrderEventArgs> OrderAdded;
+        public static event EventHandler<OrderEventArgs> OrderRemoved;
 
+        public static void AddOrderEvent(Order order)
+        {
+            OrderAdded?.Invoke(null, new OrderEventArgs(order));
+        }
+
+        public static void OrderRemovedEvent(Order order)
+        {
+            OrderRemoved?.Invoke(null, new OrderEventArgs(order));
+        }
+
+        public static void AddCustomerEvent(Customer customer)
+        {
+            //  добавления Customer
+            CustomerAdded?.Invoke(null, new CustomerEventArgs(customer));
+        }
+
+        public static void DeleteCustomerEvent(Customer customer)
+        {
+            //  удаления Customer
+            CustomerDeleted?.Invoke(null, new CustomerEventArgs(customer));
+        }
+
+        public static void UpdateCustomerEvent(Customer customer)
+        {
+            //  обновления Customer
+            CustomerUpdated?.Invoke(null, new CustomerEventArgs(customer));
+        }
         
         
-        
+        /***********************************/
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

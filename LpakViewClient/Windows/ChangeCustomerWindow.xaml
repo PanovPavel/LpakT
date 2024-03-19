@@ -21,25 +21,25 @@
         <StackPanel Width="400">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock VerticalAlignment="Center">Id</TextBlock>
-            <TextBox Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}"/>
+            <TextBox x:Name="CustomerId" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
             <TextBlock VerticalAlignment="Center">Name</TextBlock>
-            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox x:Name="NameCustomer" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock VerticalAlignment="Center">TaxNumber</TextBlock>
-            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBox x:Name="TaxNumber" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock VerticalAlignment="Center">FieldOfBusiness</TextBlock>
-            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.FieldOfBusiness.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox x:Name="FieldOfBusinessName" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.FieldOfBusiness.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock VerticalAlignment="Center">Comment</TextBlock>
-            <TextBox Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox x:Name="Comment" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
-        <Button Command="{Binding UpdateCustomer}" CommandParameter="{Binding SelectedCustomer}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
+        <Button Click="UpdateCustomer_OnClick"  Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
     </StackPanel>
     </Grid>
 </Window>

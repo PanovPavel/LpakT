@@ -111,7 +111,7 @@ namespace LpakBL.Controller
                 SqlCommand command = new SqlCommand("SELECT * FROM StatusOrder" +
                                                     " WHERE NameStatus = @NameStatus", connection);
                 command.Parameters.Add("@NameStatus", SqlDbType.VarChar).Value = statusOrder.Name;
-                var reader = await command.ExecuteReaderAsync();
+                var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     return new StatusOrder(reader.GetGuid(0), reader.GetString(1));
@@ -119,9 +119,34 @@ namespace LpakBL.Controller
                 return null;
             }
         }  
-        public Task<Order> UpdateAsync(Order item)
+        public async Task<Order> UpdateAsync(Order order)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                await connection.OpenAsync();
+                SqlCommand command = new SqlCommand("UPDATE Orders SET StatusId = @StatusId," +
+                                                    " CustomerId = @CustomerId, DataTime = @DateTimeCreatedOrder, NameWork = @NameOfWork," +
+                                                    " DescriptionWork = @DescriptionOfWork WHERE OrderId = @Id", connection);
+                command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = order.Id;
+                command.Parameters.Add("@CustomerId", SqlDbType.UniqueIdentifier).Value = order.CustomerId;
+                command.Parameters.Add("@DateTimeCreatedOrder", SqlDbType.DateTime).Value = order.DateTimeCreatedOrder;
+                command.Parameters.Add("@NameOfWork", SqlDbType.VarChar).Value = order.NameOfWork;
+                command.Parameters.Add("@DescriptionOfWork", SqlDbType.VarChar).Value = order.DescriptionOfWork;
+                StatusOrder statusOrder = CheckStatusOrderExistsInDbAsync(order.Status).Result;
+                if (statusOrder == null)
+                {
+                    
+                    command.Parameters.Add("@StatusId", SqlDbType.UniqueIdentifier).Value = order.Status.Id;
+                    await new StatusOrderController().AddAsync(order.Status);
+                }
+                else
+                {
+                    command.Parameters.Add("@StatusId", SqlDbType.UniqueIdentifier).Value = statusOrder.Id;
+                }
+
+                await command.ExecuteNonQueryAsync();
+            }
+            return order;
         }
 
         public async Task RemoveAsync(Guid id)

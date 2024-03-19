@@ -53,14 +53,25 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Window\AddCustomerWindow.xaml.cs">
+    <Compile Include="Converteres\DateTimeConverter.cs" />
+    <Compile Include="Event\CustomerEventArgs.cs" />
+    <Compile Include="Event\OrderEventArgs.cs" />
+    <Compile Include="Exception\HandlerException.cs" />
+    <Compile Include="ModelView\StatusViewModel.cs" />
+    <Compile Include="Windows\AddCustomerWindow.xaml.cs">
       <DependentUpon>AddCustomerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\ChangeCustomerWindow.xaml.cs">
+    <Compile Include="Windows\AddNewOrderForCustomerWindow.xaml.cs">
+      <DependentUpon>AddNewOrderForCustomerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ChangeCustomerWindow.xaml.cs">
       <DependentUpon>ChangeCustomerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\ErrorWindow.xaml.cs">
+    <Compile Include="Windows\ErrorWindow.xaml.cs">
       <DependentUpon>ErrorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UpdateOrderWindow.xaml.cs">
+      <DependentUpon>UpdateOrderWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -70,9 +81,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Window\AddCustomerWindow.xaml" />
-    <Page Include="Window\ChangeCustomerWindow.xaml" />
-    <Page Include="Window\ErrorWindow.xaml" />
+    <Page Include="Windows\AddCustomerWindow.xaml" />
+    <Page Include="Windows\AddNewOrderForCustomerWindow.xaml" />
+    <Page Include="Windows\ChangeCustomerWindow.xaml" />
+    <Page Include="Windows\ErrorWindow.xaml" />
+    <Page Include="Windows\UpdateOrderWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModelView\CustomerViewModel.cs" />
@@ -108,6 +121,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Control\" />
     <Folder Include="ModelView\Command\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,56 @@
+<Window x:Class="LpakViewClient.Windows.UpdateOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:LpakViewClient.Windows"
+        xmlns:modelView="clr-namespace:LpakViewClient.ModelView"
+        mc:Ignorable="d"
+        Title="UpdateOrderWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5 5 0 5" />
+            <Setter Property="Width" Value="300"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <StackPanel Width="400">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">Status</TextBlock>
+                <ComboBox ItemsSource="{Binding Statuses}"
+                          SelectedItem="{Binding SelectedStatus}"
+                          DisplayMemberPath="Name"
+                          Width="300">
+                    <!--<ComboBox.DataContext>
+                        <modelView:StatusViewModel />
+                    </ComboBox.DataContext>-->
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">IdCustomer</TextBlock>
+                <TextBox  Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding SelectedOrder.CustomerId, Mode=OneWay, UpdateSourceTrigger=LostFocus}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">IdOrder</TextBlock>
+                <TextBox  Style="{StaticResource TextBoxStyle}"
+                         Text="{Binding SelectedOrder.Id, Mode=OneWay, UpdateSourceTrigger=LostFocus}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">NameOfWork</TextBlock>
+                <TextBox Text="{Binding SelectedOrder.NameOfWork}" Style="{StaticResource TextBoxStyle}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">DescriptionOfWork</TextBlock>
+                <TextBox Style="{StaticResource TextBoxStyle}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <DatePicker IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{Binding SelectedOrder.DateTimeCreatedOrder}" />
+            </StackPanel>
+            <Button Command="{Binding UpdateOrderCommand}" CommandParameter="{Binding}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
+        </StackPanel>
+    </Grid>
+
+</Window>
