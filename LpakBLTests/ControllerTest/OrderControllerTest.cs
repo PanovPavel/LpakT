@@ -23,10 +23,11 @@ namespace LpakBLTests.ControllerTest
             Order order = await new OrderController().GetAsync(Guid.Parse(id));
             _output.WriteLine(order.ToString());
         }
-
+.
         [Fact]
         public async Task Add_Remove_OrderController_Test()
         {
+            
             List<Customer> listCustomer = await new CustomerController().GetListAsync();
             Customer firstCustomer = listCustomer.First();
             Order order = new Order(new StatusOrder("TestStatusWork"), firstCustomer.CustomerId, DateTime.Now,
