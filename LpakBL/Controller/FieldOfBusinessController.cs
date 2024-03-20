@@ -8,20 +8,35 @@ using LpakBL.Model;
 
 namespace LpakBL.Controller
 {
+    /// <summary>
+    /// Класс для взаимодействия через БД с областью занятости клиентов 
+    /// </summary>
     public class FieldOfBusinessController:IRepositoryAsync<FieldOfBusiness>
     {
+        /// <summary>
+        /// Строка подключения к БД
+        /// </summary>
         string ConnectionString { get; }
+        /// <summary>
+        /// Конструктор класса, устанавливает строку подключения к БД
+        /// </summary>
         public FieldOfBusinessController()
         {
             ConnectionString = ConnectionStringFactory.GetConnectionString();
         } 
-        
+        /// <summary>
+        /// Конструктор класса, устанавливает строку подключения к Б
+        /// </summary>
+        /// <param name="connectionString">Строка подключения к БД</param>
         public FieldOfBusinessController(string connectionString)
         {
             ConnectionString = connectionString;
         }
 
-
+        /// <summary>
+        /// Возвращает список всех областей деятельности 
+        /// </summary>
+        /// <returns>List FieldOfBusiness</returns>
         public async Task<List<FieldOfBusiness>> GetListAsync()
         {
             List<FieldOfBusiness> fieldOfBusinessList = new List<FieldOfBusiness>();
@@ -37,7 +52,12 @@ namespace LpakBL.Controller
             }
             return fieldOfBusinessList;
         }
-
+        /// <summary>
+        /// Получает область деятельности по id
+        /// </summary>
+        /// <param name="id">id области деятельности</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundByIdException">Область деятельности с указанным id не найден в бд</exception>
         public async Task<FieldOfBusiness> GetAsync(Guid id)
         {
             FieldOfBusiness fieldOfBusiness = null;
@@ -54,7 +74,13 @@ namespace LpakBL.Controller
             }
             return fieldOfBusiness?? throw new NotFoundByIdException("FieldOfBusiness with gived ID not found");
         }
-
+        
+        /// <summary>
+        /// Добавление новой области деятельности в базу данных
+        /// </summary>
+        /// <param name="fieldOfBusiness">Область деятельности для добавления</param>
+        /// <returns>Добавляймая область деятельности</returns>
+        /// <exception cref="UniquenessStatusException">Значения области деятельности нарушают один из уникальных ключей</exception>
         public async Task<FieldOfBusiness> AddAsync(FieldOfBusiness fieldOfBusiness)
         {
             try
@@ -80,6 +106,11 @@ namespace LpakBL.Controller
             return fieldOfBusiness;
         }
 
+        /// <summary>
+        /// Изменение значений области деятельности в базе данных
+        /// </summary>
+        /// <param name="fieldOfBusiness">Область деятельности которая будет изменина</param>
+        /// <returns>Изменённая область деятельности</returns>
         public async Task<FieldOfBusiness> UpdateAsync(FieldOfBusiness fieldOfBusiness)
         {
             using ( SqlConnection connection = new SqlConnection(ConnectionString))
@@ -93,6 +124,10 @@ namespace LpakBL.Controller
             return fieldOfBusiness;
         }
 
+        /// <summary>
+        /// Удаление области деятельности из базы данных по id
+        /// </summary>
+        /// <param name="id">id области деятельности</param>
         public async Task RemoveAsync(Guid id)
         {
             using (var sqlConnection = new SqlConnection(ConnectionString))

@@ -15,21 +15,39 @@ namespace LpakBL.Controller
     //Todo: Для Reader передавать в конструктор объека параметры не напрямую а из полей
     //Todo: Добавить транзакции в запросы
     //TOdo: В update добавить проверку на существование объекта в бд
+    
+    
+    /// <summary>
+    /// Класс для взаимодействия с таблицой Customer в базе данных.
+    /// </summary>
     public class CustomerController : IRepositoryAsync<Customer>
     {
+        /// <summary>
+        /// Строка подключения к базе данных.
+        /// </summary>
         private string ConnectionString { get; }
-
+        
+        /// <summary>
+        /// Конструктор класса <see cref="CustomerController"/> 
+        /// </summary>
+        /// <param name="connectionString">строка подключения к бд</param>
         public CustomerController(string connectionString)
         {
             ConnectionString = connectionString;
         }
-
+        /// <summary>
+        /// Конструктор класса <see cref="CustomerController"/> устанавливает строку подключения к базе данных.
+        /// </summary>
         public CustomerController()
         {
             ConnectionString = ConnectionStringFactory.GetConnectionString();
         }
 
 
+        /// <summary>
+        ///Получение всех клиентов
+        /// </summary>
+        /// <returns>List customers</returns>
         public async Task<List<Customer>> GetListAsync()
         {
             var customers = new List<Customer>();
@@ -57,7 +75,11 @@ namespace LpakBL.Controller
         }
         
         
-        
+        /// <summary>
+        /// Получение всех заказов для определённого клиента
+        /// </summary>
+        /// <param name="customerId">id клиента</param>
+        /// <returns>List orders для определённого клиента</returns>
         private async Task<List<Order>> GetOrdersForCustomerAsync(Guid customerId)
         {
             List<Order> orders = new List<Order>();
@@ -78,6 +100,12 @@ namespace LpakBL.Controller
             return orders;
         }
         
+        /// <summary>
+        /// Получение клинта из базы данных по id
+        /// </summary>
+        /// <param name="id">id клиента</param>
+        /// <returns>Клиент</returns>
+        /// <exception cref="NotFoundByIdException">Указанный id клиента не найден в базе данных</exception>
         public async Task<Customer> GetAsync(Guid id)
         {
             Customer customer = null;
@@ -107,7 +135,13 @@ namespace LpakBL.Controller
                 return customer?? throw new NotFoundByIdException("Customer with gived ID not found");
             }
         }
-
+        
+        /// <summary>
+        /// Добавление нового клиента в базу данных
+        /// </summary>
+        /// <param name="customer">Добавляймый клиент</param>
+        /// <returns></returns>
+        /// <exception cref="UniquenessStatusException">Нарушение уникальности свойств клиента</exception>
         public async Task<Customer> AddAsync(Customer customer)
         {
             try
@@ -148,6 +182,12 @@ namespace LpakBL.Controller
 
             return customer;
         }
+        
+        /// <summary>
+        /// Проверяяет есть ли имя указанной области деятельность в базе данных. 
+        /// </summary>
+        /// <param name="fieldOfBusiness">искомая область деятельности</param>
+        /// <returns>FieldOfBusiness если ИМЯ облисти деятельности существует в БД</returns>
         private async Task<FieldOfBusiness> CheckFieldOfBusinessExistsAsync(FieldOfBusiness fieldOfBusiness)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -164,6 +204,13 @@ namespace LpakBL.Controller
                 return null;
             }
         }        
+        
+        /// <summary>
+        /// Обнавление значений клиента в базе данных
+        /// </summary>
+        /// <param name="customer">Клиент с новыми свойствами, которые будут обновлён в БД</param>
+        /// <returns>Обновляймый клиент</returns>
+        /// <exception cref="UniquenessStatusException">Клиент не может быть обновлён, т.к. в БД уже существует клиент с таким значением</exception>
         public async Task<Customer> UpdateAsync(Customer customer)
         {
             try
@@ -207,7 +254,12 @@ namespace LpakBL.Controller
 
             return customer;
         }
-
+        
+        /// <summary>
+        /// Удаление клиента из базы данных по id
+        /// </summary>
+        /// <param name="id">id клиента</param>
+        /// <exception cref="RelatedRecordsException">id указанного клиента не найдено в БД</exception>
         public async Task RemoveAsync(Guid id)
         {
             try

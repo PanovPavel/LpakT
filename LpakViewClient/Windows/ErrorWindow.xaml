@@ -4,8 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
-        Title="ErrorWindow" Height="300" Width="300">
+        Title="ErrorWindow" Height="150" Width="600">
     <Grid>
-        <TextBlock x:Name="MessageTextBlock" Text="Ошибка"></TextBlock>
+        <TextBlock TextWrapping="Wrap" x:Name="MessageTextBlock" Text="Ошибка"></TextBlock>
     </Grid>
 </Window>

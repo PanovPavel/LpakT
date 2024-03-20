@@ -14,26 +14,26 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <StackPanel Margin="0 25 0 0 " Width="400">
+        <StackPanel Margin="0 25 0 0 " Width="430">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Name</TextBlock>
-                <TextBox Style="{StaticResource TextBoxStyle}"
+                <TextBlock VerticalAlignment="Center">Наименование</TextBlock>
+                <TextBox MaxLength="100" Style="{StaticResource TextBoxStyle}"
                          Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">TaxNumber</TextBlock>
+                <TextBlock VerticalAlignment="Center">ИНН</TextBlock>
                 <TextBox Style="{StaticResource TextBoxStyle}"
                          Text="{Binding TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">FieldOfBusiness</TextBlock>
+                <TextBlock VerticalAlignment="Center">Область деятельности</TextBlock>
                 <TextBox Style="{StaticResource TextBoxStyle}"
                          Text="{Binding FieldOfBusinessName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Comment</TextBlock>
-                <TextBox Style="{StaticResource TextBoxStyle}"
+                <TextBlock Margin="0 5 0 0"  VerticalAlignment="Top">Примечание</TextBlock>
+                <TextBox Height="70" TextWrapping="Wrap" Style="{StaticResource TextBoxStyle}"
                          Text="{Binding Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Button Command="{Binding AddCustomer}" Height="30" Width="300" HorizontalAlignment="Right">Добавить</Button>

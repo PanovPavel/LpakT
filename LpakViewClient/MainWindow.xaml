@@ -8,46 +8,33 @@
         xmlns:lpakViewClient="clr-namespace:LpakViewClient"
         xmlns:control="clr-namespace:LpakViewClient.Control"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="1200">
+        Title="MainWindow" Height="700" Width="1300">
 
     <Window.DataContext>
         <modelView:CustomerViewModel></modelView:CustomerViewModel>
     </Window.DataContext>
 
     <Window.Resources>
-        <!--<ContextMenu x:Key="RowContextMenu">
-            <MenuItem Header="Изменить" Command="{Binding UpdateCustomerOpenWindow}"
-                      CommandParameter="{Binding }" />
-            <MenuItem Header="Удалить объект" Command="{Binding RemoveSelectedCustomer}"
-                      CommandParameter="{Binding SelectedCustomer}" />
-            <MenuItem Header="Добавить объект" Command="{Binding AddNewCustomerOpenWindow}"
-                      CommandParameter="{Binding}" />
-        </ContextMenu>-->
         <lpakViewClient:DateTimeConverter x:Key="DateTimeVisibilityConverter" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="Клиенты">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="1"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <control:TableCustomersControl Grid.RowSpan="2" Grid.Row="0" Grid.Column="0" />
+                <control:CustomersTableControl Grid.RowSpan="2" Grid.Row="0" Grid.Column="0" />
                 <control:CommentControl Grid.Row="2" Grid.Column="0"></control:CommentControl>
-                <control:TableOrdersForUser Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"></control:TableOrdersForUser>
-                <Button Grid.Row="2" Height="50" Grid.Column="1" Command="{Binding OpenWindowAddNewOrderFoUser}"
-                        CommandParameter="{Binding}">
-                    Добавить заказ
-                </Button>
-                <Button Grid.Row="2" Height="50" VerticalAlignment="Bottom" Grid.Column="1"
-                        Command="{Binding RemoveSelectedOrder}" CommandParameter="{Binding SelectedOrder}">
-                    Удалить заказ
-                </Button>
+                <control:OrdersTableForUser Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"></control:OrdersTableForUser>
+                <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" Orientation="Vertical">
+                    <control:AddRemoveOrderButtonControl></control:AddRemoveOrderButtonControl>
+                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Заказы">
@@ -60,7 +47,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="200" />
                 </Grid.ColumnDefinitions>
-                <control:TableAllOrdersControl Grid.Column="0"></control:TableAllOrdersControl>
+                <control:AllOrdersTableControl Grid.Column="0"></control:AllOrdersTableControl>
                 <control:UsersListBox Grid.Column="1"></control:UsersListBox>
             </Grid>
         </TabItem>

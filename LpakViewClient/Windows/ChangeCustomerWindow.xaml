@@ -7,36 +7,35 @@
         Title="ChangeCustomerWindow" Height="450" Width="800">
     <Window.Resources>
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="5 5 0 5"/>
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="5 5 0 5" />
             <Setter Property="Width" Value="300"></Setter>
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         </Style>
     </Window.Resources>
 
-    <!--TODO: Переписать на Trigger события LostFocus вместо кнопки-->
 
     <Grid>
-        <StackPanel Width="400" Margin="0 25 0 0">
+        <StackPanel Width="450" Margin="0 25 0 0">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock VerticalAlignment="Center">Id</TextBlock>
-            <TextBox x:Name="CustomerId" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}"/>
+            <TextBlock Visibility="Collapsed" VerticalAlignment="Center">Id</TextBlock>
+            <TextBox Visibility="Collapsed" x:Name="CustomerId" Style="{StaticResource TextBoxStyle}" Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-            <TextBlock VerticalAlignment="Center">Name</TextBlock>
+            <TextBlock VerticalAlignment="Center">Наименование клиента</TextBlock>
             <TextBox x:Name="NameCustomer" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock VerticalAlignment="Center">TaxNumber</TextBlock>
-            <TextBox x:Name="TaxNumber" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock VerticalAlignment="Center">Инн</TextBlock>
+            <TextBox MaxLength="100" x:Name="TaxNumber" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.TaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock VerticalAlignment="Center">FieldOfBusiness</TextBlock>
+            <TextBlock VerticalAlignment="Center">Область деятельности</TextBlock>
             <TextBox x:Name="FieldOfBusinessName" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.FieldOfBusiness.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock VerticalAlignment="Center">Comment</TextBlock>
-            <TextBox x:Name="Comment" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock  VerticalAlignment="Top" Margin=" 0 6 0 0">Примечание</TextBlock>
+            <TextBox  TextWrapping="Wrap" Height="70" x:Name="Comment" Style="{StaticResource TextBoxStyle}"  Text="{Binding SelectedCustomer.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <Button Click="UpdateCustomer_OnClick"  Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
     </StackPanel>

@@ -23,7 +23,11 @@ namespace LpakViewClient.Windows
             Closing += NoSaveUpdateCustomer_OnCloseWindow;
             
         }
-
+        /// <summary>
+        /// Изенение заказчика из данных TextBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Аргументы события нажатия на кнопку</param>
         private async void UpdateCustomer_OnClick(object sender, RoutedEventArgs e)
         {
             Guid customerId = Guid.Parse(CustomerId.Text);
@@ -31,11 +35,8 @@ namespace LpakViewClient.Windows
             string taxNumber = TaxNumber.Text;
             FieldOfBusiness fildOfBusinessName = new FieldOfBusiness(FieldOfBusinessName.Text);
             string comment = Comment.Text;
-
             try
             {
-
-
                 CustomerController customerController = new CustomerController();
                 Customer oldCustomer = await customerController.GetAsync(Guid.Parse(CustomerId.Text));
                 Customer newModifiedCustomer = new Customer(customerId, customerName, taxNumber, comment,
@@ -49,6 +50,11 @@ namespace LpakViewClient.Windows
                 new ErrorWindow(ex.Message).Show();
             }
         }
+        /// <summary>
+        /// Обработка события закрытия окна. Сброс значений полей, без сохранения изменений.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void NoSaveUpdateCustomer_OnCloseWindow(object sender, CancelEventArgs e)
         {
             Customer oldCustomer = await new CustomerController().GetAsync(Guid.Parse(CustomerId.Text));

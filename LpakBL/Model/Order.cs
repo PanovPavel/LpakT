@@ -4,8 +4,23 @@ using LpakBL.Model.Exception;
 
 namespace LpakBL.Model
 {
+    /// <summary>
+    /// Класса описывющий модель заказа
+    /// </summary>
     public class Order
     {
+        /// <summary>
+        /// Создание экземпляра класса <see cref="Order"/> 
+        /// </summary>
+        /// <param name="id">Guid заказа</param>
+        /// <param name="status">Статус заказа</param>
+        /// <param name="customerId">Guid клиента которому принадлежит заказ</param>
+        /// <param name="dateTime">Дата создания заказа</param>
+        /// <param name="nameOfWork">Наименование работот</param>
+        /// <param name="descriptionOfWork">Описание работ. Значение пол умолчанию, пустая строка</param>
+        /// <exception cref="ArgumentException">Неверное значение Guid</exception>
+        /// <exception cref="InvalidTaxNumber">Невалидный налоговый номер</exception>
+        /// <exception cref="IncorrectLongOrNullException">Неверная длинна одного из свойств</exception>
         public Order(Guid id, StatusOrder status, Guid customerId, DateTime dateTime, string nameOfWork,
             string descriptionOfWork = "")
         {
@@ -17,13 +32,34 @@ namespace LpakBL.Model
             NameOfWork = nameOfWork;
             DescriptionOfWork = descriptionOfWork;
         }
-
+        /// <summary>
+        /// Создание экземпляра класса <see cref="Order"/> с автоматическим генерацией Guid
+        /// </summary>
+        /// <param name="status">Статус заказа</param>
+        /// <param name="customerId">Guid клиента которому принадлежит заказ</param>
+        /// <param name="dateTime">Дата создания заказа</param>
+        /// <param name="nameOfWork">Наименование работот</param>
+        /// <param name="descriptionOfWork">Описание работ. Значение пол умолчанию, пустая строка</param>
+        /// <exception cref="ArgumentException">Неверное значение Guid</exception>
+        /// <exception cref="InvalidTaxNumber">Невалидный налоговый номер</exception>
+        /// <exception cref="IncorrectLongOrNullException">Неверная длинна одного из свойств</exception>
         public Order(StatusOrder status, Guid customerId, DateTime dateTime, string nameOfWork,
             string descriptionOfWork = "")
             : this(Guid.NewGuid(), status, customerId, dateTime, nameOfWork, descriptionOfWork)
         {
         }
-
+        
+        /// <summary>
+        /// Создание экземпляра класса <see cref="Order"/> с автоматическим генерацией Guid, и
+        /// датой установки <see cref="DateTime.Now"/>
+        /// </summary>
+        /// <param name="status">Статус заказа</param>
+        /// <param name="customerId">Guid клиента которому принадлежит заказ</param>
+        /// <param name="nameOfWork">Наименование работот</param>
+        /// <param name="descriptionOfWork">Описание работ. Значение пол умолчанию, пустая строка</param>
+        /// <exception cref="ArgumentException">Неверное значение Guid</exception>
+        /// <exception cref="InvalidTaxNumber">Невалидный налоговый номер</exception>
+        /// <exception cref="IncorrectLongOrNullException">Неверная длинна одного из свойств</exception>
         public Order(StatusOrder status, Guid customerId, string nameOfWork, string descriptionOfWork = "")
             : this(Guid.NewGuid(), status, customerId, DateTime.Now, nameOfWork, descriptionOfWork)
         {
@@ -32,8 +68,15 @@ namespace LpakBL.Model
         private DateTime _dateTimeCreatedOrder;
         private Guid _customerId;
         private StatusOrder _status;
+        /// <summary>
+        /// Уникальный номер заказа
+        /// </summary>
         public Guid Id { get; }
-
+        
+        /// <summary>
+        /// Дата заказа
+        /// </summary>
+        /// <exception cref="InvalidDateException">Дата больше текущей или слишком старая</exception>
         public DateTime DateTimeCreatedOrder
         {
             get => _dateTimeCreatedOrder;
@@ -44,7 +87,7 @@ namespace LpakBL.Model
                     throw new InvalidDateException("Date time created order can not be null");
                 }
 
-                if (value > DateTime.Today || value < DateTime.Parse("01.01.2000"))
+                if (value > DateTime.Today.AddHours(11).AddMinutes(59) || value < DateTime.Parse("01.01.2000"))
                 {
                     throw new InvalidDateException($"Date time cannot more than today or less than 01.01.2000 value={value}");
                 }
@@ -52,7 +95,10 @@ namespace LpakBL.Model
                 _dateTimeCreatedOrder = value;
             }
         }
-
+        /// <summary>
+        /// Наименование работот
+        /// </summary>
+        /// <exception cref="IncorrectLongOrNullException">Невреная длинная наименование работ. null or WhiteSpace</exception>
         public string NameOfWork
         {
             get => _nameOfWork;
@@ -65,13 +111,21 @@ namespace LpakBL.Model
             }
         }
 
+        /// <summary>
+        /// Описание работ. Значение пол умолчанию, пустая строк
+        /// </summary>
+        /// <exception cref="ArgumentNullException">попытка присвоить null описанию работ</exception>
         public string DescriptionOfWork
         {
             get => _descriptionOfWork;
             set => _descriptionOfWork =
                 value ?? throw new ArgumentNullException( nameof(DescriptionOfWork), "Argument cannot be null");
         }
-
+        
+        /// <summary>
+        /// Уникальный номер клиента, которому принадлежит заказ
+        /// </summary>
+        /// <exception cref="ArgumentException">Guid не может быть простым</exception>
         public Guid CustomerId
         {
             get => _customerId;
@@ -86,6 +140,10 @@ namespace LpakBL.Model
             }
         }
 
+        /// <summary>
+        /// Статус заказа
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Статус заказа не может быть null</exception>
         public StatusOrder Status
         {
             get => _status;

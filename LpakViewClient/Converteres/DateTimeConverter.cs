@@ -9,6 +9,10 @@ namespace LpakViewClient
     /// </summary>
     public class DateTimeConverter: IValueConverter
     {
+        /// <summary>
+        /// Конвертирует <see cref="DateTime"/> в <see cref="string"/> формата "dd.MM.yyyy".
+        /// </summary>
+        /// <returns>Возвращает null - Если дата MinValue. ВОзвращает если объект DateTime дату в виде строки "dd.MM.yyyy"</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             switch (value)

@@ -6,19 +6,22 @@
         xmlns:modelView="clr-namespace:LpakViewClient.ModelView"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="AddNewOrderForUserWindow" Height="450" Width="800">
+        Title="AddNewOrderForUserWindow" Height="300" Width="700">
     <Window.Resources>
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="5 5 0 5" />
+            <Setter Property="Margin" Value="5 10 0 5" />
             <Setter Property="Width" Value="300"></Setter>
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>
         </Style>
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0 5 5 0"></Setter>
+        </Style>
     </Window.Resources>
     <Grid>
-        <StackPanel Width="400" Margin="0 25 0 0">
+        <StackPanel Width="450" Margin="0 25 0 0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Status</TextBlock>
+                <TextBlock Margin="0 0 10 0" VerticalAlignment="Center">Статус</TextBlock>
                 <ComboBox x:Name="Status_Combobox" ItemsSource="{Binding Statuses}"
                           SelectedItem="{Binding SelectedStatus}"
                           DisplayMemberPath="Name"
@@ -31,22 +34,23 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Id</TextBlock>
-                <TextBox x:Name="CustomerIdSelectedTextBox" Style="{StaticResource TextBoxStyle}"
+                <TextBlock Visibility="Collapsed" Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center">Id</TextBlock>
+                <TextBox Visibility="Collapsed"  x:Name="CustomerIdSelectedTextBox" Style="{StaticResource TextBoxStyle}"
                          Text="{Binding SelectedCustomer.CustomerId, Mode=OneWay, UpdateSourceTrigger=LostFocus}" />
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 
-                <TextBlock  VerticalAlignment="Center">NameWork</TextBlock>
-                <TextBox x:Name="NameWorkTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center">Наименование работ</TextBlock>
+                <TextBox MaxLength="100" x:Name="NameWorkTextBox" Style="{StaticResource TextBoxStyle}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">DescriptionWork</TextBlock>
-                <TextBox x:Name="DescriptionTextBox" Style="{StaticResource TextBoxStyle}"/>
+                <TextBlock Style="{StaticResource TextBlockStyle}" VerticalAlignment="Center">Описание работ</TextBlock>
+                <TextBox MaxLength="450" TextWrapping="Wrap" Height="100" x:Name="DescriptionTextBox" Style="{StaticResource TextBoxStyle}"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <DatePicker  Name="datePicker" IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}"/>
+            <StackPanel Margin="0 5 0 10" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center">Дата заявки</TextBlock>
+                <DatePicker Width="100" Margin="10 0 0 0" Name="datePicker" IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}"/>
             </StackPanel>
             <Button Click="AddNewOrder_OnClick" Height="30" Width="300" HorizontalAlignment="Right">Добавить</Button>
         </StackPanel>

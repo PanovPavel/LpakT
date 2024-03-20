@@ -18,7 +18,11 @@ namespace LpakViewClient.Windows
             InitializeComponent();
             DataContext = customer;
         }
-
+        /// <summary>
+        /// Создание нового заказа из значения полей TextBoxes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Аргументы события нажатия на кнопку</param>
         private async void AddNewOrder_OnClick(object sender, RoutedEventArgs e)
         {
             StatusOrder statusOrder = Status_Combobox.SelectionBoxItem is StatusOrder stOrder?stOrder:new StatusOrder("Создан");

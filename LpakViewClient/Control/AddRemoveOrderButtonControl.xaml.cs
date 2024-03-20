@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace LpakViewClient.Control
 {
-    public partial class TableOrdersForUser : UserControl
+    public partial class AddRemoveOrderButtonControl : UserControl
     {
-        public TableOrdersForUser()
+        public AddRemoveOrderButtonControl()
         {
             InitializeComponent();
         }

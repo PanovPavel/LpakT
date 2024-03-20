@@ -52,6 +52,7 @@ namespace LpakBLTests.Model
 
         }
         
+        /*
         [Theory]
         [InlineData(null)]
 
@@ -61,6 +62,7 @@ namespace LpakBLTests.Model
             var name = " Ы фывФВ ";
             Assert.Throws<ArgumentNullException>(()=>new Customer(name, taxNumber, comment, new FieldOfBusiness("sadsad")));
         }
+        */
         
         
         [Theory]

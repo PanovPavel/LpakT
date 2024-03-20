@@ -17,6 +17,9 @@ namespace LpakViewClient.ModelView
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class CustomerViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Создание экземпляра класса CustomerViewModel. 
+        /// </summary>
         public CustomerViewModel()
         {
             GetLoadedCustomers();
@@ -25,72 +28,31 @@ namespace LpakViewClient.ModelView
             OrderViewModel.OrderUpdated += (object sender, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
         }
         
-        
-
+        /// <summary>
+        /// Инциализация ObservableCollection<Customer>  клиентами из базы данных. 
+        /// </summary>
         private async void GetLoadedCustomers()
         {
             List<Customer> customersList = await new CustomerController().GetListAsync();
-            Customers.Clear(); // Очистка существующего списка
+            Customers.Clear();
             foreach (var customer in customersList)
             {
-                Customers.Add(customer); // Добавление каждого клиента в существующую коллекцию
+                Customers.Add(customer); 
             }
         }
         
+
         private DateTime _lastDateTimeOrder;
-        public DateTime LastDateTimeOrder
-        {
-            get=> _lastDateTimeOrder;
-            set
-            {
-                _lastDateTimeOrder = value;
-                OnPropertyChanged("LastDateTimeOrder");
-            }
-        }
-        private RelayCommand _updateCustomerOpenWindow, _removeSelectedCustomer, _addNewCustomerOpenWindow, _addCustomerCommand, _removeSelectedOrder, _updateCustomer;
+        private RelayCommand _openWindowAddNewOrderFoUser, _updateCustomerOpenWindow, _removeSelectedCustomer, _addNewCustomerOpenWindow, _addCustomerCommand, _removeSelectedOrder, _updateCustomer;
         private string _name, _fieldOfBusinessName,_taxNumber,_comment;
         private Order _selectedOrder;
         private Customer _selectedCustomer;
         private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                _name = value.Trim();
-                OnPropertyChanged("Name");
-            }
-        }
-        public string FieldOfBusinessName
-        {
-            get => _fieldOfBusinessName;
-            set
-            {
-                _fieldOfBusinessName = value;
-                OnPropertyChanged("FieldOfBusinessName");
-            }
-        }
-        public string TaxNumber
-        {
-            get => _taxNumber;
-            set
-            {
-                    _taxNumber = value;
-                    if(value == "12") throw new InvalidTaxNumber(nameof(TaxNumber), "Value cannot be null or empty string");
-                OnPropertyChanged("TaxNumber");
-            }
-        }
-        
-        public string Comment
-        {
-            get => _comment;
-            set
-            {
-                _comment = value;
-                OnPropertyChanged("Comment");
-            }
-        }
-        
+        private int _countOrders;
+
+        /// <summary>
+        /// Коллекция заказчиков.
+        /// </summary>
         public ObservableCollection<Customer> Customers
         {
             get => _customers;
@@ -100,7 +62,58 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged("Customers");
             }
         }
-        
+        /// <summary>
+        /// Имя заказчика. 
+        /// </summary>
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value.Trim();
+                OnPropertyChanged("Name");
+            }
+        }
+        /// <summary>
+        /// Область деятельности заказчика. 
+        /// </summary>
+        public string FieldOfBusinessName
+        {
+            get => _fieldOfBusinessName;
+            set
+            {
+                _fieldOfBusinessName = value;
+                OnPropertyChanged("FieldOfBusinessName");
+            }
+        }
+        /// <summary>
+        /// Налоговый номер заказчика. 
+        /// </summary>
+        public string TaxNumber
+        {
+            get => _taxNumber;
+            set
+            {
+                _taxNumber = value;
+                OnPropertyChanged("TaxNumber");
+            }
+        }
+        /// <summary>
+        /// Примечание к заказчику. 
+        /// </summary>
+        public string Comment
+        {
+            get => _comment;
+            set
+            {
+                _comment = value;
+                OnPropertyChanged("Comment");
+            }
+        }
+
+        /// <summary>
+        /// Выделенный заказ в GridTable 
+        /// </summary>
         public Order SelectedOrder
         {
             get => _selectedOrder;
@@ -111,8 +124,9 @@ namespace LpakViewClient.ModelView
             }
         }
 
-
-        
+        /// <summary>
+        /// Выделенный заказчик DataGrid
+        /// </summary>
         public Customer SelectedCustomer
         {
             get => _selectedCustomer;
@@ -122,7 +136,11 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged("SelectedCustomer");
             }
         }
-
+        
+        
+        /// <summary>
+        /// Сбросить свойства текущего дата контекст на Empty
+        /// </summary>
         private void ClearProperties()
         {
             Name = string.Empty;
@@ -130,7 +148,34 @@ namespace LpakViewClient.ModelView
             TaxNumber = string.Empty;
             Comment = string.Empty;
         }
-        
+        /// <summary>
+        /// Количество заказов для текущего заказчика. 
+        /// </summary>
+        public int CountOrders
+        {
+            get=>_countOrders;
+            set
+            {
+                _countOrders = SelectedCustomer.Orders.Count;
+                OnPropertyChanged("CountOrders");
+            }
+        }
+        /// <summary>
+        /// Дата последнего заказа для текущего заказчика. 
+        /// </summary>
+        public DateTime LastDateTimeOrder
+        {
+            get=> _lastDateTimeOrder;
+            set
+            {
+                _lastDateTimeOrder = value;
+                OnPropertyChanged("LastDateTimeOrder");
+            }
+        }
+        /// <summary>
+        /// Открыть окно для изменения выделенного нового заказчика.
+        /// Команда доступна только при SelectedCustomer != null
+        /// </summary>
         public RelayCommand UpdateCustomerOpenWindow
         {
             get
@@ -147,20 +192,16 @@ namespace LpakViewClient.ModelView
                            (obj) => SelectedCustomer != null));
             }
         }
-        private int _countOrders;
-        public int CountOrders
-        {
-            get=>_countOrders;
-            set
-            {
-                _countOrders = SelectedCustomer.Orders.Count;
-                OnPropertyChanged("CountOrders");
-            }
-        }
-        
-        
-        public RelayCommand UpdateCustomer => _updateCustomer ?? (_updateCustomer = new RelayCommand(UpdateCustomerAsync));
 
+        
+        /// <summary>
+        /// Изменить текущий заказчик. 
+        /// </summary>
+        public RelayCommand UpdateCustomer => _updateCustomer ?? (_updateCustomer = new RelayCommand(UpdateCustomerAsync));
+        /// <summary>
+        /// Изменить текущий заказчик. 
+        /// </summary>
+        /// <param name="obj">Объект выделенного в DataGrid заказчика</param>
         private async void UpdateCustomerAsync(object obj)
         {
             if (obj is Customer customerUpdated)
@@ -178,7 +219,9 @@ namespace LpakViewClient.ModelView
             }   
         }
         
-        
+        /// <summary>
+        /// Удалить выбранный заказчик. 
+        /// </summary>
         public RelayCommand RemoveSelectedCustomer
         {
             get
@@ -186,7 +229,10 @@ namespace LpakViewClient.ModelView
                 return _removeSelectedCustomer ?? (_removeSelectedCustomer = new RelayCommand(RemoveSelectedCustomerAsync, (obj) => SelectedCustomer != null));
             }
         }
-
+        /// <summary>
+        /// Удалить выбранный заказчик. 
+        /// </summary>
+        /// <param name="obj">Объект Customer который необходимо удалить</param>
         private async void RemoveSelectedCustomerAsync(object obj)
         {
             if (obj is Customer customer)
@@ -203,7 +249,9 @@ namespace LpakViewClient.ModelView
                 }
             }
         }
-        
+        /// <summary>
+        /// Удалить выбранный заказ. 
+        /// </summary>
         public RelayCommand RemoveSelectedOrder
         {
             get
@@ -212,6 +260,10 @@ namespace LpakViewClient.ModelView
             }
         }
 
+        /// <summary>
+        /// Удалить выбранный заказ. 
+        /// </summary>
+        /// <param name="obj">Объект Order который необходимо удалить</param>
         private async void RemoveSelectedOrderAsync(object obj)
         {
             if (obj is Order order)
@@ -226,7 +278,9 @@ namespace LpakViewClient.ModelView
             }
         }
         
-        /**/
+        /// <summary>
+        /// Открыть окно для добавления нового заказчика.
+        /// </summary>
         public RelayCommand AddNewCustomerOpenWindow
         {
             get
@@ -244,6 +298,10 @@ namespace LpakViewClient.ModelView
                            , (obj) => true));
             }
         }
+        
+        /// <summary>
+        /// Добавить нового заказчика. 
+        /// </summary>
         public RelayCommand AddCustomer
         {
             get
@@ -253,6 +311,9 @@ namespace LpakViewClient.ModelView
             }
         }
         
+        /// <summary>
+        /// Добавить нового заказчика. 
+        /// </summary>
         private async void AddCustomerExecute(object parameter)
         {
             try
@@ -271,8 +332,10 @@ namespace LpakViewClient.ModelView
             }
         }
         
-        private RelayCommand _openWindowAddNewOrderFoUser;
-
+        
+        /// <summary>
+        /// Открыть окно для добавления нового заказа.
+        /// </summary>
         public RelayCommand OpenWindowAddNewOrderFoUser
         {
             get
@@ -297,40 +360,79 @@ namespace LpakViewClient.ModelView
             AddOrderEvent(e);
         }
         
+        /// <summary>
+        /// Событие, возникающее при добавлении нового клиента.
+        /// </summary>
         public static event EventHandler<CustomerEventArgs> CustomerAdded;
+        /// <summary>
+        /// Событие, возникающее при удалении клиента.
+        /// </summary>
         public static event EventHandler<CustomerEventArgs> CustomerDeleted;
+        /// <summary>
+        /// Событие, возникающее при обновлении информации о клиенте.
+        /// </summary>
         public static event EventHandler<CustomerEventArgs> CustomerUpdated;
+        
+        /// <summary>
+        /// Событие, возникающее при добавлении нового заказа.
+        /// </summary>
         public static event EventHandler<OrderEventArgs> OrderAdded;
+        /// <summary>
+        /// Событие, возникающее при удалении заказа.
+        /// </summary>
         public static event EventHandler<OrderEventArgs> OrderRemoved;
-
+        
+        /// <summary>
+        /// Инициирует событие о добавлении нового заказа.
+        /// </summary>
+        /// <param name="order">Добавленный заказ.</param>
         public static void AddOrderEvent(Order order)
         {
             OrderAdded?.Invoke(null, new OrderEventArgs(order));
         }
-
+        
+        /// <summary>
+        /// Инициирует событие о удалении заказа.
+        /// </summary>
+        /// <param name="order">Удаленный заказ.</param>
         public static void OrderRemovedEvent(Order order)
         {
             OrderRemoved?.Invoke(null, new OrderEventArgs(order));
         }
-
+        /// <summary>
+        /// Инициирует событие о добавлении нового клиента.
+        /// </summary>
+        /// <param name="customer">Добавленный клиент.</param>
         public static void AddCustomerEvent(Customer customer)
         {
             //  добавления Customer
             CustomerAdded?.Invoke(null, new CustomerEventArgs(customer));
         }
-
+        /// <summary>
+        /// Инициирует событие о удалении клиента.
+        /// </summary>
+        /// <param name="customer">Удаленный клиент.</param>
         public static void DeleteCustomerEvent(Customer customer)
         {
             //  удаления Customer
             CustomerDeleted?.Invoke(null, new CustomerEventArgs(customer));
         }
-
+        /// <summary>
+        /// Инициирует событие об обновлении информации о клиенте.
+        /// </summary>
+        /// <param name="customer">Обновленный клиент.</param>
         public static void UpdateCustomerEvent(Customer customer)
         {
             //  обновления Customer
             CustomerUpdated?.Invoke(null, new CustomerEventArgs(customer));
         }
+        /// <summary>
+        /// Событие, возникающее при изменении значения свойства.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Вызывает событие о изменении значения свойства.
+        /// </summary>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

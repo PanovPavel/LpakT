@@ -14,38 +14,39 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <StackPanel Width="400" Margin="0 25 0 0">
+        <StackPanel Width="430" Margin="0 25 0 0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">Status</TextBlock>
+                <TextBlock Margin="0 0 5 0" VerticalAlignment="Center">Статус</TextBlock>
                 <ComboBox ItemsSource="{Binding Statuses}"
                           SelectedItem="{Binding SelectedStatus}"
                           DisplayMemberPath="Name"
-                          Width="300">
+                          Width="300"
+                          >
                     <!--<ComboBox.DataContext>
                         <modelView:StatusViewModel />
                     </ComboBox.DataContext>-->
                 </ComboBox>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">IdCustomer</TextBlock>
-                <TextBox  Style="{StaticResource TextBoxStyle}"
+            <StackPanel Visibility="Collapsed" Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock  VerticalAlignment="Center">IdCustomer</TextBlock>
+                <TextBox   Style="{StaticResource TextBoxStyle}"
                          Text="{Binding SelectedOrder.CustomerId, Mode=OneWay, UpdateSourceTrigger=LostFocus}" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel Visibility="Collapsed" Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock VerticalAlignment="Center">IdOrder</TextBlock>
                 <TextBox  Style="{StaticResource TextBoxStyle}"
                          Text="{Binding SelectedOrder.Id, Mode=OneWay, UpdateSourceTrigger=LostFocus}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">NameOfWork</TextBlock>
-                <TextBox Text="{Binding SelectedOrder.NameOfWork}" Style="{StaticResource TextBoxStyle}" />
+                <TextBlock VerticalAlignment="Center">Наименование работ</TextBlock>
+                <TextBox MaxLength="100" Text="{Binding SelectedOrder.NameOfWork}" Style="{StaticResource TextBoxStyle}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock VerticalAlignment="Center">DescriptionOfWork</TextBlock>
-                <TextBox Text="{Binding SelectedOrder.DescriptionOfWork}" Style="{StaticResource TextBoxStyle}" />
+                <TextBlock Margin="0 5 0 0" VerticalAlignment="Top">Описание работ</TextBlock>
+                <TextBox MaxLength="500" TextWrapping="Wrap" Height="100" Text="{Binding SelectedOrder.DescriptionOfWork}" Style="{StaticResource TextBoxStyle}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <DatePicker IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{Binding SelectedOrder.DateTimeCreatedOrder}" />
+                <DatePicker Width="150" Margin="10 0 0 7" IsDropDownOpen="False" SelectedDateFormat="Short" SelectedDate="{Binding SelectedOrder.DateTimeCreatedOrder}" />
             </StackPanel>
             <Button Click="CloseWindow_ClickButtonСhange" Command="{Binding UpdateOrderCommand}" CommandParameter="{Binding}" Height="30" Width="300" HorizontalAlignment="Right">Изменить</Button>
         </StackPanel>

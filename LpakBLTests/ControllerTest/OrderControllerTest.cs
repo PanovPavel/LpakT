@@ -17,7 +17,7 @@ namespace LpakBLTests.ControllerTest
             this._output = output;
         }
         [Theory]
-        [InlineData("0343b067-dfe5-44dd-8102-a4e6849edbfc")]
+        [InlineData("6ef1ee4a-3600-4e28-b706-6cc8e8cc62ff")]
         public async Task Get_OrderController_Test(string id)
         {
             Order order = await new OrderController().GetAsync(Guid.Parse(id));
@@ -34,6 +34,7 @@ namespace LpakBLTests.ControllerTest
             await new OrderController().AddAsync(order);
             await new OrderController().RemoveAsync(order.Id);
         }
+        
         [Fact]
         public async Task GetList_OrderController_Test()
         {

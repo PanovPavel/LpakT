@@ -8,21 +8,36 @@ using LpakBL.Model;
 
 namespace LpakBL.Controller
 {
+    /// <summary>
+    /// Класс для работы с заказами в базе данных
+    /// </summary>
     public class OrderController : IRepositoryAsync<Order>
     {
+        /// <summary>
+        /// Строка подключения к БД
+        /// </summary>
         public string ConnectionString { get; set; }
-        
+        /// <summary>
+        /// Конструктор класса OrderController устанавливает строку подключения к БД
+        /// </summary>
         public OrderController()
         {
             ConnectionString = ConnectionStringFactory.GetConnectionString();
         }
         
+        /// <summary>
+        /// Конструктор класса OrderController устанавливает строку подключения
+        /// </summary>
+        /// <param name="connectionString">строка подключения к БД</param>
         public OrderController(string connectionString)
         {
             ConnectionString = connectionString;
         }
 
-
+        /// <summary>
+        /// Получение все заказы в базе данных
+        /// </summary>
+        /// <returns>List всех заказов в базе данных</returns>
         public async Task<List<Order>> GetListAsync()
         {
             List<Order> ordersList = new List<Order>();
@@ -47,18 +62,25 @@ namespace LpakBL.Controller
             }
             return ordersList;
         }
+        
+        /// <summary>
+        /// Получить заказ по id
+        /// </summary>
+        /// <param name="id">id получаймого заказа </param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundByIdException">Указанный id не существует в БД</exception>
         public async Task<Order> GetAsync(Guid id)
         {
             Order order = null;            
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            using (var sqlConnection = new SqlConnection(ConnectionString))
             {
                 await sqlConnection.OpenAsync();
-                SqlCommand command = new SqlCommand("SELECT * FROM Orders WHERE OrderId = @Id", sqlConnection);
+                var command = new SqlCommand("SELECT * FROM Orders WHERE OrderId = @Id", sqlConnection);
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
                 var reader = await command.ExecuteReaderAsync();
                 while (reader.Read())
                 {
-                    StatusOrder statusOrder = await new StatusOrderController().GetAsync(reader.GetGuid(1));
+                    var statusOrder = await new StatusOrderController().GetAsync(reader.GetGuid(1));
                     string description = reader.IsDBNull(reader.GetOrdinal("DescriptionWork"))?"":reader.GetString(reader.GetOrdinal("DescriptionWork"));                  
                       order = new Order(
                           reader.GetGuid(0),
@@ -72,6 +94,12 @@ namespace LpakBL.Controller
                 return order ?? throw new NotFoundByIdException("Order with gived ID not found");
             }
         }
+        
+        /// <summary>
+        /// Добавить новый заказ в базу данных
+        /// </summary>
+        /// <param name="order">Добавляймы заказ</param>
+        /// <returns>Добавленный заказ</returns>
         public async Task<Order> AddAsync(Order order)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
@@ -101,6 +129,12 @@ namespace LpakBL.Controller
             }
             return order;
         }
+        
+        /// <summary>
+        /// Проверяет есть ли ИМЯ StatusOrder в базе данных
+        /// </summary>
+        /// <param name="statusOrder">проверяймый StatusOrder</param>
+        /// <returns>возвращает StatusOrder если он содержится в БД, или null</returns>
         private async Task<StatusOrder> CheckStatusOrderExistsInDbAsync(StatusOrder statusOrder)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -117,6 +151,12 @@ namespace LpakBL.Controller
                 return null;
             }
         }  
+        
+        /// <summary>
+        /// Изменить заказ в базе данных
+        /// </summary>
+        /// <param name="order">Изменяймый order</param>
+        /// <returns>изменяймы order</returns>
         public async Task<Order> UpdateAsync(Order order)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -147,6 +187,11 @@ namespace LpakBL.Controller
             return order;
         }
 
+        
+        /// <summary>
+        /// Удалить заказ из базы данных по id
+        /// </summary>
+        /// <param name="id">id удаляймого заказа</param>
         public async Task RemoveAsync(Guid id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))

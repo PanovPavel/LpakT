@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace LpakViewClient.Control
 {
-    public partial class TableCustomersControl : UserControl
+    public partial class CustomersTableControl : UserControl
     {
-        public TableCustomersControl()
+        public CustomersTableControl()
         {
             InitializeComponent();
         }

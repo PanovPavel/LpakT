@@ -3,10 +3,17 @@ using LpakBL.Model.Exception;
 
 namespace LpakBL.Model
 {
+    /// <summary>
+    /// Статус заказа.
+    /// </summary>
     public class StatusOrder
     {
         
         private string _name;
+        /// <summary>
+        /// Наименование статуса заказа.
+        /// </summary>
+        /// <exception cref="IncorrectLongOrNullException">Неверная длинна строки имени заказа NullOrWhiteSpace</exception>
         public string Name
         {
             get=>_name;
@@ -17,14 +24,24 @@ namespace LpakBL.Model
                 _name = value;
             }
         }
+        /// <summary>
+        /// Уникальный номер статуса заказа.
+        /// </summary>
         public Guid Id { get; }
-
+        /// <summary>
+        /// Создание экземпляра класса <see cref="StatusOrder"/>.
+        /// </summary>
+        /// <param name="id">Guid статуса заказа</param>
+        /// <param name="name">Имя статуса заказа</param>
         public StatusOrder(Guid id, string name)
         {
             Id = id;
             Name = name;
         }
-
+        /// <summary>
+        /// Создание экземпляра класса <see cref="StatusOrder"/> с генерацией Guid по умолчанию.
+        /// </summary>
+        /// <param name="name">Имя статуса заказа</param>
         public StatusOrder(string name):this(Guid.NewGuid(), name)  
         {
             

@@ -7,11 +7,22 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="15"></Setter>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="12"></Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <Grid Grid.Row="2" Grid.Column="0">
+        <Grid>
             <StackPanel>
-                <TextBlock>Примечания к клиенту: </TextBlock>
-                <TextBox Height="150" Text="{Binding SelectedCustomer.Comment, UpdateSourceTrigger=LostFocus}">
+                <TextBlock Style="{StaticResource TextBlockStyle}">Примечания к клиенту: </TextBlock>
+                <TextBox Style="{StaticResource TextBoxStyle}" Height="150" TextWrapping="Wrap" Text="{Binding SelectedCustomer.Comment, UpdateSourceTrigger=LostFocus}">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="LostFocus">
                             <b:InvokeCommandAction
