@@ -6,6 +6,6 @@
         mc:Ignorable="d"
         Title="ErrorWindow" Height="150" Width="600">
     <Grid>
-        <TextBlock TextWrapping="Wrap" x:Name="MessageTextBlock" Text="Ошибка"></TextBlock>
+        <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" x:Name="MessageTextBlock" Text="Ошибка"></TextBlock>
     </Grid>
 </Window>
