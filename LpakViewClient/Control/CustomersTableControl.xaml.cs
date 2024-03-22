@@ -1,4 +1,7 @@
+using System;
+using System.ComponentModel;
 using System.Windows.Controls;
+using LpakViewClient.ModelView;
 
 namespace LpakViewClient.Control
 {

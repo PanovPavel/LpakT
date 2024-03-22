@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 using LpakBL.Controller;
 using LpakBL.Controller.Exception;
 using LpakBL.Model;
@@ -41,6 +43,16 @@ namespace LpakViewClient.ModelView
             }
         }
         
+        private async Task GetLoadedCustomersAsync()
+        {
+            List<Customer> customersList = await new CustomerController().GetListAsync();
+            Customers.Clear();
+            foreach (var customer in customersList)
+            {
+                Customers.Add(customer); 
+            }
+        }
+
 
         private DateTime _lastDateTimeOrder;
         private RelayCommand _openWindowAddNewOrderFoUser, _updateCustomerOpenWindow, _removeSelectedCustomer, _addNewCustomerOpenWindow, _addCustomerCommand, _removeSelectedOrder, _updateCustomer;
@@ -268,13 +280,22 @@ namespace LpakViewClient.ModelView
         {
             if (obj is Order order)
             {
-                await new OrderController().RemoveAsync(order.Id);
-                Customer old = SelectedCustomer;
-                SelectedCustomer.Orders.Remove(order);
+                /*await new OrderController().RemoveAsync(order.Id);
+                Customer oldSelectedCustomer = SelectedCustomer;
+                oldSelectedCustomer.Orders.Remove(order);
                 SelectedCustomer = null;
-                GetLoadedCustomers();
-                SelectedCustomer = old;
+                await GetLoadedCustomersAsync();
+                SelectedCustomer = oldSelectedCustomer;
                 OrderRemovedEvent(order);
+                OnPropertyChanged("SelectedCustomer");*/
+                
+                await new OrderController().RemoveAsync(order.Id);
+                SelectedCustomer.Orders.Remove(order);
+                Customer selectedCustomerBeforeUpdate = SelectedCustomer;
+                await GetLoadedCustomersAsync();
+                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+                OrderRemovedEvent(order);
+                OnPropertyChanged("SelectedCustomer");
             }
         }
         
@@ -351,13 +372,19 @@ namespace LpakViewClient.ModelView
                            (obj) => SelectedCustomer != null));
             }
         }
-        private void ViewModelUpdateCustomerOrders(object sender, Order e)
+        private async void ViewModelUpdateCustomerOrders(object sender, Order order)
         {
-            SelectedCustomer.Orders.Add(e);
-            Customer old = SelectedCustomer;
+            /*SelectedCustomer.Orders.Add(e);
+            Customer selectedCustomerBeforeUpdate = SelectedCustomer;
             GetLoadedCustomers();
-            SelectedCustomer = old;
-            AddOrderEvent(e);
+            SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+            AddOrderEvent(e);*/
+            SelectedCustomer.Orders.Add(order);
+            Customer selectedCustomerBeforeUpdate = SelectedCustomer;
+            await GetLoadedCustomersAsync();
+            SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+            AddOrderEvent(order);
+            OnPropertyChanged("SelectedCustomer");
         }
         
         /// <summary>
