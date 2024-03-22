@@ -387,6 +387,7 @@ namespace LpakViewClient.ModelView
             OnPropertyChanged("SelectedCustomer");
         }
         
+        
         /// <summary>
         /// Событие, возникающее при добавлении нового клиента.
         /// </summary>
