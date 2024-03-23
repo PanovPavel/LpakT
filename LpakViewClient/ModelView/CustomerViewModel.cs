@@ -26,8 +26,20 @@ namespace LpakViewClient.ModelView
         {
             GetLoadedCustomers();
             AddNewOrderForCustomerWindow.AddOrderForUser += ViewModelUpdateCustomerOrders;
-            OrderViewModel.OrderRemoved += (object sender, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
-            OrderViewModel.OrderUpdated += (object sender, OrderEventArgs orderEventArgs) => {GetLoadedCustomers(); };
+            OrderViewModel.OrderRemoved += async (object sender, OrderEventArgs orderEventArgs) =>
+            {
+                Customer selectedCustomerBeforeUpdate = SelectedCustomer;
+                await GetLoadedCustomersAsync();
+                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+                OnPropertyChanged("SelectedCustomer");
+            };
+            OrderViewModel.OrderUpdated += async (object sender, OrderEventArgs orderEventArgs) =>
+            {
+                Customer selectedCustomerBeforeUpdate = SelectedCustomer;
+                await GetLoadedCustomersAsync();
+                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+                OnPropertyChanged("SelectedCustomer");
+            };
         }
         
         /// <summary>
@@ -280,19 +292,11 @@ namespace LpakViewClient.ModelView
         {
             if (obj is Order order)
             {
-                /*await new OrderController().RemoveAsync(order.Id);
-                Customer oldSelectedCustomer = SelectedCustomer;
-                oldSelectedCustomer.Orders.Remove(order);
-                SelectedCustomer = null;
-                await GetLoadedCustomersAsync();
-                SelectedCustomer = oldSelectedCustomer;
-                OrderRemovedEvent(order);
-                OnPropertyChanged("SelectedCustomer");*/
-                
                 await new OrderController().RemoveAsync(order.Id);
                 SelectedCustomer.Orders.Remove(order);
                 Customer selectedCustomerBeforeUpdate = SelectedCustomer;
                 await GetLoadedCustomersAsync();
+                //SelectedCustomer = selectedCustomerBeforeUpdate;
                 SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
                 OrderRemovedEvent(order);
                 OnPropertyChanged("SelectedCustomer");
@@ -374,11 +378,6 @@ namespace LpakViewClient.ModelView
         }
         private async void ViewModelUpdateCustomerOrders(object sender, Order order)
         {
-            /*SelectedCustomer.Orders.Add(e);
-            Customer selectedCustomerBeforeUpdate = SelectedCustomer;
-            GetLoadedCustomers();
-            SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
-            AddOrderEvent(e);*/
             SelectedCustomer.Orders.Add(order);
             Customer selectedCustomerBeforeUpdate = SelectedCustomer;
             await GetLoadedCustomersAsync();
@@ -386,8 +385,6 @@ namespace LpakViewClient.ModelView
             AddOrderEvent(order);
             OnPropertyChanged("SelectedCustomer");
         }
-        
-        
         /// <summary>
         /// Событие, возникающее при добавлении нового клиента.
         /// </summary>
