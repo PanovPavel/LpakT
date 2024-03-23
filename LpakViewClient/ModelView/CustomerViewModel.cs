@@ -30,14 +30,14 @@ namespace LpakViewClient.ModelView
             {
                 Customer selectedCustomerBeforeUpdate = SelectedCustomer;
                 await GetLoadedCustomersAsync();
-                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+                if(selectedCustomerBeforeUpdate != null) SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
                 OnPropertyChanged("SelectedCustomer");
             };
             OrderViewModel.OrderUpdated += async (object sender, OrderEventArgs orderEventArgs) =>
             {
                 Customer selectedCustomerBeforeUpdate = SelectedCustomer;
                 await GetLoadedCustomersAsync();
-                SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
+                if(selectedCustomerBeforeUpdate != null) SelectedCustomer = Customers.FirstOrDefault(c => c.CustomerId == selectedCustomerBeforeUpdate.CustomerId);
                 OnPropertyChanged("SelectedCustomer");
             };
         }
