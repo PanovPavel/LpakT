@@ -42,7 +42,6 @@ namespace LpakViewClient.ModelView
         /// </summary>
         private async void GetData()
         {
-            
             List<Order> orders = await new OrderController().GetListAsync();
             Orders.Clear();
             foreach (var order in orders)
@@ -64,6 +63,7 @@ namespace LpakViewClient.ModelView
                 Statuses.Add(status);
             }
         }
+
         /// <summary>
         /// Коллекция заказов.
         /// </summary>
@@ -76,6 +76,7 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged(nameof(Orders));
             }
         }
+        
         /// <summary>
         /// Коллекция заказчиков.
         /// </summary>
@@ -88,6 +89,7 @@ namespace LpakViewClient.ModelView
                 OnPropertyChanged(nameof(Customers));
             }
         }
+        
         /// <summary>
         /// Коллекция статусов заказов.
         /// </summary>
@@ -110,7 +112,7 @@ namespace LpakViewClient.ModelView
             set
             {
                 _selectedCustomers = value;
-                OnPropertyChanged(nameof(SelectedCustomers));
+                OnPropertyChanged("SelectedCustomers");
                 UpdateFilteredOrders(value);
             }
         }
@@ -181,6 +183,7 @@ namespace LpakViewClient.ModelView
                 return _removeSelectedOrder ?? (_removeSelectedOrder = new RelayCommand(RemoveSelectedOrderAsync, obj => SelectedOrder != null));
             }
         }
+        
         /// <summary>
         /// Удалить выбранный заказ
         /// </summary>
@@ -219,6 +222,7 @@ namespace LpakViewClient.ModelView
                     }, obj => SelectedOrder != null));
             }
         }
+        
         /// <summary>
         /// Измений  заказ
         /// </summary>
@@ -229,6 +233,7 @@ namespace LpakViewClient.ModelView
                 return _updateOrderCommand ?? (_updateOrderCommand = new RelayCommand(UpdateOrderCommandAsync, obj => SelectedOrder != null));
             }
         }
+        
         /// <summary>
         /// Изменение заказа
         /// </summary>
@@ -269,6 +274,7 @@ namespace LpakViewClient.ModelView
         {
             Orders.Insert(0, e.Order);
         }
+        
         /// <summary>
         /// Событие удаления заказчика
         /// </summary>
@@ -280,6 +286,7 @@ namespace LpakViewClient.ModelView
             var indexRemove = Customers.IndexOf(customer);
             Customers.RemoveAt(indexRemove);
         }
+        
         /// <summary>
         /// Обработка события изменения клиета
         /// </summary>
@@ -288,10 +295,13 @@ namespace LpakViewClient.ModelView
         private void UpdateCustomerEventHandler(object sender, CustomerEventArgs e)
         {
             var customer = Customers.First(c => c.CustomerId == e.Customer.CustomerId);
-            var indexOldCustomer = Customers.IndexOf(customer);
-            Customers.RemoveAt(indexOldCustomer);
-            Customers.Insert(indexOldCustomer, e.Customer);
+            customer.Name = e.Customer.Name;
+            customer.Orders = e.Customer.Orders;
+            customer.TaxNumber = e.Customer.TaxNumber;
+            customer.FieldOfBusiness = e.Customer.FieldOfBusiness;
+            SelectedCustomers.Add(customer);
         }
+        
         /// <summary>
         /// Обработка события добавления клиета
         /// </summary>
@@ -309,14 +319,17 @@ namespace LpakViewClient.ModelView
         /// Событие, возникающее при выбора статуса заказа
         /// </summary>
         public event EventHandler<Guid> StatusSelectedChanged;
+        
         /// <summary>
         /// Событие, возникающее при изменение заказа
         /// </summary>
         public static event EventHandler<OrderEventArgs> OrderUpdated;
+        
         /// <summary>
         /// Событие, возникающее при удалении заказа
         /// </summary>
         public static event EventHandler<OrderEventArgs> OrderRemoved;
+        
         /// <summary>
         /// Инициирует событие изменеия заказа
         /// </summary>
