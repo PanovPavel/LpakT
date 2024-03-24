@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using LpakBL.Controller.Exception;
 using LpakBL.Model.Exception;
 
@@ -7,7 +9,7 @@ namespace LpakBL.Model
     /// <summary>
     /// Класса описывющий модель заказа
     /// </summary>
-    public class Order
+    public class Order : INotifyPropertyChanged
     {
         /// <summary>
         /// Создание экземпляра класса <see cref="Order"/> 
@@ -93,6 +95,7 @@ namespace LpakBL.Model
                 }
 
                 _dateTimeCreatedOrder = value;
+                OnPropertyChanged(nameof(DateTimeCreatedOrder));
             }
         }
         /// <summary>
@@ -108,6 +111,7 @@ namespace LpakBL.Model
                     throw new IncorrectLongOrNullException(nameof(NameOfWork),
                         $"Invalid long or value null value={value}");
                 _nameOfWork = value;
+                OnPropertyChanged(nameof(NameOfWork));
             }
         }
 
@@ -118,10 +122,14 @@ namespace LpakBL.Model
         public string DescriptionOfWork
         {
             get => _descriptionOfWork;
-            set => _descriptionOfWork =
-                value ?? throw new ArgumentNullException( nameof(DescriptionOfWork), "Argument cannot be null");
+            set
+            {
+                _descriptionOfWork =
+                    value ?? throw new ArgumentNullException(nameof(DescriptionOfWork), "Argument cannot be null");
+                OnPropertyChanged(nameof(DescriptionOfWork));
+            }
         }
-        
+
         /// <summary>
         /// Уникальный номер клиента, которому принадлежит заказ
         /// </summary>
@@ -135,8 +143,8 @@ namespace LpakBL.Model
                 {
                     throw new ArgumentException("Customer id can not be empty", nameof(CustomerId));
                 }
-
                 _customerId = value;
+                OnPropertyChanged(nameof(CustomerId));
             }
         }
 
@@ -154,6 +162,21 @@ namespace LpakBL.Model
         {
             return $"{nameof(Id)}: {Id}, {nameof(DateTimeCreatedOrder)}: {DateTimeCreatedOrder}, " +
                    $"{nameof(NameOfWork)}: {NameOfWork}, {nameof(DescriptionOfWork)}: {DescriptionOfWork}";
+        }
+        
+        
+        
+        /// <summary>
+        /// Событие, которое возникает при изменении значения свойства.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Вызывает событие <see cref="PropertyChanged"/> для указанного свойства.
+        /// </summary>
+        /// /// <param name="propertyName">Имя изменившегося свойства.</param>
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
