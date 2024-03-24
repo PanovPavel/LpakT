@@ -10,6 +10,7 @@ using LpakViewClient.Windows;
 
 namespace LpakViewClient.ModelView
 {
+    
     /// <summary>
     /// ViewModel для работы с заказами
     /// </summary>
