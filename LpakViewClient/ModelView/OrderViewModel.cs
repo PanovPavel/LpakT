@@ -245,10 +245,16 @@ namespace LpakViewClient.ModelView
             {
                 if (orderViewModel.SelectedOrder != null)
                 {
+                    Order oldOrder = Orders.First(o => o.Id == orderViewModel.SelectedOrder.Id);
                     Order newOrder = orderViewModel.SelectedOrder;
                     newOrder.Status = orderViewModel.SelectedStatus;
+                    
+                    oldOrder.Status = orderViewModel.SelectedStatus;
+                    oldOrder.DateTimeCreatedOrder = newOrder.DateTimeCreatedOrder;
+                    oldOrder.DescriptionOfWork = newOrder.DescriptionOfWork;
+                    oldOrder.NameOfWork = newOrder.NameOfWork;
                     await new OrderController().UpdateAsync(newOrder);
-                    GetData();
+                    //GetData();
                     OrderUpdatedEvent(newOrder);
                 }
             }
@@ -261,6 +267,12 @@ namespace LpakViewClient.ModelView
         /// <param name="e">объект который был удалён</param>
         private void OrderRemovedEventHandler(object sender, OrderEventArgs e)
         {
+            Customer customer = Customers.FirstOrDefault(cus => cus.CustomerId == e.Order.CustomerId);
+            if (customer != null)
+            {
+                var findIndex = customer.Orders.FindIndex((ord => ord.Id == e.Order.Id));
+                customer.Orders.RemoveAt(findIndex);
+            }
             var order = Orders.First(o => o.Id == e.Order.Id);
             int removeIndex = Orders.IndexOf(order);
             Orders.RemoveAt(removeIndex);
@@ -273,7 +285,20 @@ namespace LpakViewClient.ModelView
         /// <param name="e">объект который был удалён</param>
         private void OrderAddedEventHandler(object sender, OrderEventArgs e)
         {
-            Orders.Insert(0, e.Order);
+            Customer customer = Customers.FirstOrDefault(c => c.CustomerId == e.Order.CustomerId);
+
+            if (customer != null && !customer.Orders.Exists(o => o.Id == e.Order.Id))
+            {
+                customer.Orders.Add(e.Order);
+            }
+            if (SelectedCustomers == null || SelectedCustomers.Count == 0)
+            {
+                Orders.Insert(0, e.Order);
+            }
+            else if (SelectedCustomers.Any(c => c.CustomerId == e.Order.CustomerId))
+            {
+                Orders.Insert(0, e.Order);
+            }            
         }
         
         /// <summary>
