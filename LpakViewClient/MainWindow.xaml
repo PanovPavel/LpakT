@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:modelView="clr-namespace:LpakViewClient.ModelView"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:lpakViewClient="clr-namespace:LpakViewClient"
         xmlns:control="clr-namespace:LpakViewClient.Control"
         mc:Ignorable="d"
