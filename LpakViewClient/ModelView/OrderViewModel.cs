@@ -325,7 +325,7 @@ namespace LpakViewClient.ModelView
             customer.Orders = e.Customer.Orders;
             customer.TaxNumber = e.Customer.TaxNumber;
             customer.FieldOfBusiness = e.Customer.FieldOfBusiness;
-            SelectedCustomers.Add(customer);
+            SelectedCustomers?.Add(customer);
         }
         
         /// <summary>
