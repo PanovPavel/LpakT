@@ -1,4 +1,5 @@
-
+БД: MSServer
+SDK: .net 4.7
 
 
 <details>
